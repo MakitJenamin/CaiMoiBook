@@ -4,16 +4,31 @@
  */
 package dto;
 
-import java.sql.Date;
-
 /**
  *
  * @author letpl
  */
-public class RequestDTO {
-    private int requestId;
-    private String bookTitle;   
+import java.util.Date;
+
+public class Record {
+    private int recordId;
     private int bookId;
+    private int userId;
+    private String bookTitle;
+    private Date borrowDate;
+    private Date dueDate;
+    private Date returnDate;
+    private String status;
+
+    // Getters and Setters
+
+    public int getRecordId() {
+        return recordId;
+    }
+
+    public void setRecordId(int recordId) {
+        this.recordId = recordId;
+    }
 
     public int getBookId() {
         return bookId;
@@ -30,19 +45,6 @@ public class RequestDTO {
     public void setUserId(int userId) {
         this.userId = userId;
     }
-    private String userName;
-    private int userId;
-    private Date requestDate;
-    private String status;
-
-    // getters & setters
-    public int getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(int requestId) {
-        this.requestId = requestId;
-    }
 
     public String getBookTitle() {
         return bookTitle;
@@ -52,20 +54,28 @@ public class RequestDTO {
         this.bookTitle = bookTitle;
     }
 
-    public String getUserName() {
-        return userName;
+    public Date getBorrowDate() {
+        return borrowDate;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setBorrowDate(Date borrowDate) {
+        this.borrowDate = borrowDate;
     }
 
-    public Date getRequestDate() {
-        return requestDate;
+    public Date getDueDate() {
+        return dueDate;
     }
 
-    public void setRequestDate(Date requestDate) {
-        this.requestDate = requestDate;
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Date getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(Date returnDate) {
+        this.returnDate = returnDate;
     }
 
     public String getStatus() {
@@ -75,6 +85,4 @@ public class RequestDTO {
     public void setStatus(String status) {
         this.status = status;
     }
-    
 }
-

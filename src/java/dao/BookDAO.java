@@ -50,30 +50,55 @@ public class BookDAO {
         return list;
     }
     
-        public List<Book> getAllBooks() {
-        List<Book> list = new ArrayList<>();
-        String sql = "SELECT * FROM books";
-        try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Book b = new Book();
-                b.setId(rs.getInt("id"));
-                b.setTitle(rs.getString("title"));
-                b.setAuthor(rs.getString("author"));
-                b.setIsbn(rs.getString("isbn"));
-                b.setCategory(rs.getString("category"));
-                b.setPublishedYear(rs.getInt("published_year"));
-                b.setTotalCopies(rs.getInt("total_copies"));
-                b.setAvailableCopies(rs.getInt("available_copies"));
-                b.setStatus(rs.getString("status"));
-                list.add(b);
+            public List<Book> getAllBooks() {
+            List<Book> list = new ArrayList<>();
+            String sql = "SELECT * FROM books";
+            try (Connection conn = DBUtils.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Book b = new Book();
+                    b.setId(rs.getInt("id"));
+                    b.setTitle(rs.getString("title"));
+                    b.setAuthor(rs.getString("author"));
+                    b.setIsbn(rs.getString("isbn"));
+                    b.setCategory(rs.getString("category"));
+                    b.setPublishedYear(rs.getInt("published_year"));
+                    b.setTotalCopies(rs.getInt("total_copies"));
+                    b.setAvailableCopies(rs.getInt("available_copies"));
+                    b.setStatus(rs.getString("status"));
+                    list.add(b);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
+            return list;
     }
+            public List<Book> getNewBooks() {
+            List<Book> list = new ArrayList<>();
+            String sql = "SELECT * FROM books ORDER BY published_year DESC";
+            try (Connection conn = DBUtils.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Book b = new Book();
+                    b.setId(rs.getInt("id"));
+                    b.setTitle(rs.getString("title"));
+                    b.setAuthor(rs.getString("author"));
+                    b.setIsbn(rs.getString("isbn"));
+                    b.setCategory(rs.getString("category"));
+                    b.setPublishedYear(rs.getInt("published_year"));
+                    b.setTotalCopies(rs.getInt("total_copies"));
+                    b.setAvailableCopies(rs.getInt("available_copies"));
+                    b.setStatus(rs.getString("status"));
+                    list.add(b);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return list;
+    }    
+            
         public boolean requestBook(int userId, int bookId) {
             String sql = "INSERT INTO book_requests(user_id, book_id, request_date, status) VALUES (?, ?, GETDATE(), 'pending')";
             try (Connection conn = DBUtils.getConnection();
@@ -89,7 +114,7 @@ public class BookDAO {
         
 public List<RequestDTO> getAllPendingRequests() {
     List<RequestDTO> list = new ArrayList<>();
-    String sql = "SELECT r.id, b.title, u.name, r.request_date, r.status " +
+    String sql = "SELECT r.id, r.book_id, r.user_id, b.title, u.name, r.request_date, r.status " +
     "FROM book_requests r " +
     "JOIN books b ON r.book_id = b.id " +
     "JOIN users u ON r.user_id = u.id " +
@@ -100,6 +125,8 @@ public List<RequestDTO> getAllPendingRequests() {
         while (rs.next()) {
             RequestDTO r = new RequestDTO();
             r.setRequestId(rs.getInt("id"));
+            r.setBookId(rs.getInt("book_id"));
+            r.setUserId(rs.getInt("user_id"));
             r.setBookTitle(rs.getString("title"));
             r.setUserName(rs.getString("name"));
             r.setRequestDate(rs.getDate("request_date"));
@@ -240,6 +267,97 @@ public Book getBookByISBN(String isbn) {
     return null;
 }
 
+public Book getBookById(int id) {
+    String sql = "SELECT * FROM books WHERE id = ?";
+    try (Connection conn = DBUtils.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, id);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return new Book(
+                rs.getInt("id"),
+                rs.getString("title"),
+                rs.getString("author"),
+                rs.getString("isbn"),
+                rs.getString("category"),
+                rs.getInt("published_year"),
+                rs.getInt("total_copies"),
+                rs.getInt("available_copies"),
+                rs.getString("status")
+            );
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return null;
+}
+
+public void insertBook(Book b) {
+    String sql = "INSERT INTO books (title, author, isbn, category, published_year, total_copies, available_copies, status) " +
+                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    try (Connection con = DBUtils.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setString(1, b.getTitle());
+        ps.setString(2, b.getAuthor());
+        ps.setString(3, b.getIsbn());
+        ps.setString(4, b.getCategory());
+        ps.setInt(5, b.getPublishedYear());
+        ps.setInt(6, b.getTotalCopies());
+        ps.setInt(7, b.getAvailableCopies());
+        ps.setString(8, b.getStatus());
+
+        ps.executeUpdate();
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+public void deleteBook(int id) {
+    String sql = "DELETE FROM books WHERE id = ?";
+    try (Connection conn = DBUtils.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setInt(1, id);
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+public boolean updateBook(Book book) {
+    String sql = "UPDATE books SET title=?, author=?, isbn=?, category=?, published_year=?, total_copies=?, available_copies=?, status=? WHERE id=?";
+    try (Connection conn = DBUtils.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, book.getTitle());
+        ps.setString(2, book.getAuthor());
+        ps.setString(3, book.getIsbn());
+        ps.setString(4, book.getCategory());
+        ps.setInt(5, book.getPublishedYear());
+        ps.setInt(6, book.getTotalCopies());
+        ps.setInt(7, book.getAvailableCopies());
+        ps.setString(8, book.getStatus());
+        ps.setInt(9, book.getId());
+
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
+    }
+}
+
+public void increaseAvailableCopies(int bookId) {
+    String sql = "UPDATE books SET available_copies = available_copies + 1 WHERE id = ?";
+    try (Connection conn = DBUtils.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setInt(1, bookId);
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 
 
 }

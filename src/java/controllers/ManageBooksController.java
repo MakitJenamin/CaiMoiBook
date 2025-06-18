@@ -5,23 +5,20 @@
 package controllers;
 
 import dao.BookDAO;
-import dao.BorrowRecordDAO;
-import dao.RequestDAO;
-import dto.RequestDTO;
+import dto.Book;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.Date;
-import java.time.LocalDate;
 
 /**
  *
  * @author letpl
  */
-public class HandleRequestController extends HttpServlet {
+public class ManageBooksController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +37,10 @@ public class HandleRequestController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HandleRequestController</title>");            
+            out.println("<title>Servlet ManageBooksController</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HandleRequestController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ManageBooksController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,7 +58,10 @@ public class HandleRequestController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        BookDAO dao = new BookDAO();
+        List<Book> list = dao.getAllBooks();
+        request.setAttribute("bookList", list);
+        request.getRequestDispatcher("manageBooks.jsp").forward(request, response);
     }
 
     /**
@@ -75,30 +75,7 @@ public class HandleRequestController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        int requestId = Integer.parseInt(request.getParameter("requestId"));
-        String action = request.getParameter("action");
-
-        BookDAO dao = new BookDAO();
-        if ("approve".equals(action)) {
-            dao.approveRequest(requestId);
-                            // Lấy thông tin từ request
-            RequestDTO requestfound = RequestDAO.getRequestById(requestId);
-            int userId = requestfound.getUserId();
-            int bookId = requestfound.getBookId();
-
-            // Ngày mượn là hôm nay
-            LocalDate borrowDate = LocalDate.now();
-            // Hạn trả là 14 ngày sau (có thể chỉnh tùy chính sách)
-            LocalDate dueDate = borrowDate.plusDays(14);
-            // Ghi vào bảng borrow_records
-            BorrowRecordDAO.insertBorrowRecord(userId, bookId, Date.valueOf(borrowDate), Date.valueOf(dueDate));
-
-        } else if ("reject".equals(action)) {
-            dao.rejectRequest(requestId);
-        }
-
-        response.sendRedirect("AdminRequestController");
+        processRequest(request, response);
     }
 
     /**

@@ -32,6 +32,42 @@
         <servlet-name>BookDetailController</servlet-name>
         <servlet-class>controllers.BookDetailController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UserBorrowHistoryController</servlet-name>
+        <servlet-class>controllers.UserBorrowHistoryController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>LogoutController</servlet-name>
+        <servlet-class>controllers.LogoutController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminUserManageController</servlet-name>
+        <servlet-class>controllers.AdminUserManageController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ReturnBookController</servlet-name>
+        <servlet-class>controllers.ReturnBookController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddBookController</servlet-name>
+        <servlet-class>controllers.AddBookController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ManageBooksController</servlet-name>
+        <servlet-class>controllers.ManageBooksController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteBookController</servlet-name>
+        <servlet-class>controllers.DeleteBookController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditBookController</servlet-name>
+        <servlet-class>controllers.EditBookController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateBookController</servlet-name>
+        <servlet-class>controllers.UpdateBookController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegisterController</servlet-name>
         <url-pattern>/RegisterController</url-pattern>
@@ -63,6 +99,42 @@
     <servlet-mapping>
         <servlet-name>BookDetailController</servlet-name>
         <url-pattern>/BookDetailController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserBorrowHistoryController</servlet-name>
+        <url-pattern>/UserBorrowHistoryController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LogoutController</servlet-name>
+        <url-pattern>/LogoutController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminUserManageController</servlet-name>
+        <url-pattern>/AdminUserManageController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReturnBookController</servlet-name>
+        <url-pattern>/ReturnBookController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddBookController</servlet-name>
+        <url-pattern>/AddBookController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ManageBooksController</servlet-name>
+        <url-pattern>/ManageBooksController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteBookController</servlet-name>
+        <url-pattern>/DeleteBookController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditBookController</servlet-name>
+        <url-pattern>/EditBookController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateBookController</servlet-name>
+        <url-pattern>/UpdateBookController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

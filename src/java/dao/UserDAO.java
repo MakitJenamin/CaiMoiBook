@@ -20,19 +20,19 @@ public class UserDAO {
             cn = DBUtils.getConnection();
             if (cn != null) {
                 // 2: viet query va execute
-                String sql = "select [id],[name],[email],[password],[role],[status]\n"
+                String sql = "select [id],[name],[email],[role],[status]\n"
                         + "from [dbo].[users]\n"
                         + "where email = '" + email + "'";
                 Statement st = cn.createStatement();
                 ResultSet table = st.executeQuery(sql);
                 if (table != null && table.next()) {
+                    result = new User();
                     // 3: doc data trong table
-                    int id = table.getInt("id");
-                    String name = table.getString("name");
-                    String password = table.getString("password");
-                    String role = table.getString("role");
-                    String status = table.getString("status");
-                    result = new User(id, name, email, password, role, status);
+                    result.setId(table.getInt("id"));
+                    result.setEmail(table.getString("email"));
+                    result.setName(table.getString("name"));
+                    result.setRole(table.getString("role"));
+                    result.setStatus(table.getString("status"));
                 }
             }
         } catch (Exception e) {
@@ -48,6 +48,19 @@ public class UserDAO {
         }
         return result;
     }
+    
+    public boolean updateUserStatus(int userId, String status) {
+    String sql = "UPDATE users SET status = ? WHERE id = ?";
+    try (Connection conn = DBUtils.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, status);
+        ps.setInt(2, userId);
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
+}
 
     // ham nay de insert new user vao bang User
     // Input: name, email, password=> id duy nhat, role='user', status='user'

@@ -23,14 +23,14 @@ public class ShowBooksController extends HttpServlet {
             throws ServletException, IOException {
         String returnTo = request.getParameter("returnTo");
         BookDAO dao = new BookDAO();
-        if ("search.jsp".equals(returnTo)) {
+        if ("search.jsp".equals(returnTo)) { // trang search.jsp
             List<Book> result = dao.getAllBooks(); // Hoặc lấy lại theo searchResults nếu cần
             List<String> categories = dao.getAllCategories();
             request.setAttribute("searchResults", result);
             request.setAttribute("categories", categories);
             request.getRequestDispatcher("search.jsp").forward(request, response);
-        } else {
-            List<Book> bookList = dao.getAllBooks();
+        } else { // trang chinh
+            List<Book> bookList = dao.getNewBooks();
             request.setAttribute("bookList", bookList);
             request.getRequestDispatcher("index.jsp").forward(request, response);
         }

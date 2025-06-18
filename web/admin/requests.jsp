@@ -25,6 +25,7 @@
         <title>📋 Yêu cầu mượn sách</title>
     </head>
     <body>
+                <a href="index.jsp">Home</a>
         <h2>📋 Yêu cầu mượn sách</h2>
 <table border="1" cellpadding="5">
     <tr>

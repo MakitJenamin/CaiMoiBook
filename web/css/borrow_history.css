@@ -1,0 +1,106 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f6f9fc;
+    margin: 0;
+    padding: 0;
+}
+
+.history-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.history-title {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.history-card {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    padding: 20px 25px;
+    margin-bottom: 20px;
+    transition: transform 0.2s ease;
+}
+
+.history-card:hover {
+    transform: scale(1.015);
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.book-title {
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-returned {
+    background-color: #2ecc71;
+}
+
+.status-borrowed {
+    background-color: #3498db;
+}
+
+.status-overdue {
+    background-color: #e74c3c;
+}
+
+.history-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    row-gap: 10px;
+    column-gap: 20px;
+    font-size: 0.95em;
+    color: #555;
+}
+
+.history-info span {
+    display: block;
+}
+
+.return-btn {
+  padding: 6px 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.return-btn:hover {
+  background-color: #218838;
+}
+
+
+@media screen and (max-width: 600px) {
+    .history-card {
+        padding: 16px;
+    }
+
+    .book-title {
+        font-size: 1em;
+    }
+}

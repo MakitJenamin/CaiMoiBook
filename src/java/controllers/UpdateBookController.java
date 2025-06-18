@@ -5,23 +5,19 @@
 package controllers;
 
 import dao.BookDAO;
-import dao.BorrowRecordDAO;
-import dao.RequestDAO;
-import dto.RequestDTO;
+import dto.Book;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.sql.Date;
-import java.time.LocalDate;
 
 /**
  *
  * @author letpl
  */
-public class HandleRequestController extends HttpServlet {
+public class UpdateBookController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +36,10 @@ public class HandleRequestController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HandleRequestController</title>");            
+            out.println("<title>Servlet UpdateBookController</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HandleRequestController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateBookController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -75,30 +71,44 @@ public class HandleRequestController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
+            String message = null;
+            request.setCharacterEncoding("UTF-8");
+            int id = Integer.parseInt(request.getParameter("id"));
+            String title = request.getParameter("title");
+            String author = request.getParameter("author");
+            String isbn = request.getParameter("isbn");
+            String category = request.getParameter("category");
+            int publishedYear = Integer.parseInt(request.getParameter("publishedYear"));
+            int totalCopies = Integer.parseInt(request.getParameter("totalCopies"));
+            int availableCopies = Integer.parseInt(request.getParameter("availableCopies"));
+            String status = request.getParameter("status");
 
-        int requestId = Integer.parseInt(request.getParameter("requestId"));
-        String action = request.getParameter("action");
+            Book updatedBook = new Book();
+            updatedBook.setId(id);
+            updatedBook.setTitle(title);
+            updatedBook.setAuthor(author);
+            updatedBook.setIsbn(isbn);
+            updatedBook.setCategory(category);
+            updatedBook.setPublishedYear(publishedYear);
+            updatedBook.setTotalCopies(totalCopies);
+            updatedBook.setAvailableCopies(availableCopies);
+            updatedBook.setStatus(status);
 
-        BookDAO dao = new BookDAO();
-        if ("approve".equals(action)) {
-            dao.approveRequest(requestId);
-                            // Lấy thông tin từ request
-            RequestDTO requestfound = RequestDAO.getRequestById(requestId);
-            int userId = requestfound.getUserId();
-            int bookId = requestfound.getBookId();
+            BookDAO dao = new BookDAO();
+            boolean success = dao.updateBook(updatedBook);
 
-            // Ngày mượn là hôm nay
-            LocalDate borrowDate = LocalDate.now();
-            // Hạn trả là 14 ngày sau (có thể chỉnh tùy chính sách)
-            LocalDate dueDate = borrowDate.plusDays(14);
-            // Ghi vào bảng borrow_records
-            BorrowRecordDAO.insertBorrowRecord(userId, bookId, Date.valueOf(borrowDate), Date.valueOf(dueDate));
-
-        } else if ("reject".equals(action)) {
-            dao.rejectRequest(requestId);
+            if (success) {
+                message = "Cập nhật sách thành công!";
+            } else {
+                message = "❌ Cập nhật sách thất bại!";
+            }
+            response.sendRedirect("ManageBooksController?message=" + message);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp");
         }
-
-        response.sendRedirect("AdminRequestController");
     }
 
     /**

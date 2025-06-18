@@ -3,6 +3,13 @@
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="dto.Book" %>
 <%
+    String status = (String) session.getAttribute("status");
+    if ("inactive".equalsIgnoreCase(status)) {
+        out.println("<div style='text-align:center; padding: 50px; font-size: 24px; color: red;'>🚫 Account was disabled</div>");
+        return;
+    }
+%>
+<%
     if (request.getAttribute("bookList") == null) {
         response.sendRedirect("ShowBooks");
         return;
@@ -54,6 +61,7 @@
             
             <% if(userName != null){ %>
                 <button class="sign-in" onclick="window.location.href='index.jsp'"><%= "🕴" + userName%></button>
+                <button class="regis-ter" onclick="window.location.href='LogoutController'">🚪 Logout</button>
             <% } else { %>
                 <button class="sign-in" onclick="window.location.href='login.jsp'">Sign in</button>
                 <button class="regis-ter" onclick="window.location.href='register.jsp'">Register</button>
@@ -71,7 +79,28 @@
             🔧 Xử lý yêu cầu mượn sách
         </a>
     </div>
+    <div style="margin: 10px 0;">
+        <a href="admin_manage_users.jsp" style="color: red; font-weight: bold;">
+            🔍 Quản lý tài khoản người dùng
+        </a>
+    </div>
+    <div style="margin: 10px 0;">
+        <a href="addBook.jsp" style="color: red; font-weight: bold;">
+            📚 Thêm sách
+        </a>
+    </div>
+    <div style="margin: 10px 0;">
+        <a href="ManageBooksController" class="admin-btn">📚 Quản lý sách</a>
+    </div>
 <% } %>
+            <% if ("user".equals(role)) { %>
+    <div style="margin: 10px 0;">
+        <a href="UserBorrowHistoryController" style="color: red; font-weight: bold;">
+            📓 History Borrored Book
+        </a>
+    </div>
+<% } %>
+
         <div class="grid">
             <div class="text-section">
                 <h1>Discover Your Next Favorite Book</h1>
