@@ -12,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -57,31 +58,30 @@ public class BookDetailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         String isbn = request.getParameter("isbn");
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        BookDAO dao = new BookDAO();
-        Book book = dao.getBookByISBN(isbn);
-
-        PrintWriter out = response.getWriter();
-        if (book == null) {
-            out.print("{}");
-            return;
+        try {
+            int bookId = Integer.parseInt(request.getParameter("id"));
+            BookDAO dao = new BookDAO();
+            Book book = dao.getBookById(bookId);
+            
+            HttpSession session = request.getSession(false);
+            Integer userId = null;
+            if (session != null) {
+                userId = (Integer) session.getAttribute("userId");
+            }
+            
+            if (book != null) {
+                if (userId != null) {
+                    String bookStatus = dao.checkBookStatusForUser(userId, bookId);
+                    request.setAttribute("bookStatus", bookStatus);
+                }
+                request.setAttribute("book", book);
+                request.getRequestDispatcher("book_detail.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("error/404.jsp");
+            }
+        } catch (NumberFormatException e) {
+            response.sendRedirect("error/404.jsp");
         }
-
-        // KHÔNG dùng """ nếu Java < 15
-        String json = "{"
-                + "\"title\":\"" + book.getTitle() + "\","
-                + "\"author\":\"" + book.getAuthor() + "\","
-                + "\"category\":\"" + book.getCategory() + "\","
-                + "\"year\":" + book.getPublishedYear() + ","
-                + "\"copies\":" + book.getTotalCopies() + ","
-                + "\"available\":" + book.getAvailableCopies() + ","
-                + "\"status\":\"" + book.getStatus() + "\""
-                + "}";
-        out.print(json);
     }
     
     

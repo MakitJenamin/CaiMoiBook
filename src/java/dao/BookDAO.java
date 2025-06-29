@@ -76,7 +76,7 @@ public class BookDAO {
     }
             public List<Book> getNewBooks() {
             List<Book> list = new ArrayList<>();
-            String sql = "SELECT * FROM books ORDER BY published_year DESC";
+            String sql = "SELECT TOP 8 * FROM books ORDER BY published_year DESC";
             try (Connection conn = DBUtils.getConnection();
                  PreparedStatement ps = conn.prepareStatement(sql);
                  ResultSet rs = ps.executeQuery()) {
@@ -212,9 +212,12 @@ public List<Book> searchBooksAdvanced(String title, String author, String catego
             b.setId(rs.getInt("id"));
             b.setTitle(rs.getString("title"));
             b.setAuthor(rs.getString("author"));
+            b.setIsbn(rs.getString("isbn"));
             b.setCategory(rs.getString("category"));
             b.setPublishedYear(rs.getInt("published_year"));
-            // các trường khác nếu có
+            b.setTotalCopies(rs.getInt("total_copies"));
+            b.setAvailableCopies(rs.getInt("available_copies"));
+            b.setStatus(rs.getString("status"));
             list.add(b);
         }
     } catch (Exception e) {
@@ -359,5 +362,42 @@ public void increaseAvailableCopies(int bookId) {
     }
 }
 
+public String checkBookStatusForUser(int userId, int bookId) {
+    String status = "AVAILABLE"; // Default status
+    Connection cn = null;
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+
+    try {
+        cn = DBUtils.getConnection();
+        if (cn != null) {
+            // Check for a pending or approved request for this book by the user
+            String sqlCheckRequest = "SELECT status FROM book_requests WHERE user_id = ? AND book_id = ? AND status IN ('pending', 'approved')";
+            pst = cn.prepareStatement(sqlCheckRequest);
+            pst.setInt(1, userId);
+            pst.setInt(2, bookId);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                String requestStatus = rs.getString("status");
+                if ("pending".equals(requestStatus)) {
+                    return "REQUESTED";
+                } else if ("approved".equals(requestStatus)) {
+                    return "BORROWED"; 
+                }
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (pst != null) pst.close();
+            if (cn != null) cn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    return status;
+}
 
 }

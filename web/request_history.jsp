@@ -1,0 +1,131 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.List" %>
+<%@ page import="dto.RequestDTO" %>
+<%@ page import="java.util.ArrayList" %>
+<%
+    String userName = (String) session.getAttribute("userName");
+    String role = (String) session.getAttribute("role");
+    List<RequestDTO> history = (List<RequestDTO>) request.getAttribute("requestHistory");
+    if (history == null) {
+        history = new ArrayList<>();
+    }
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lịch Sử Yêu Cầu</title>
+    <link rel="stylesheet" href="css/styleindex.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .container {
+            padding-top: 100px;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-bottom: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .history-table th, .history-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .history-table th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+        }
+        .history-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .history-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .status-approved { color: #28a745; font-weight: bold; }
+        .status-pending { color: #ffc107; font-weight: bold; }
+        .status-rejected { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-logo">
+            <img src="images/simple-book-line-icon-stroke-260nw-1687315123.jpg" alt="LibraryOnline Logo" class="logo">
+            <span class="titleName">LibraryOnline</span>
+        </div>
+        <div class="nav-header">
+            <a href="index.jsp" class="item-header">Home</a>
+            <a href="SearchBooks" class="item-header">Browse</a>
+            <a href="#" class="item-header">Categories</a>
+            <a href="#" class="item-header">About</a>
+            <a href="#" class="item-header">Contact</a>
+            <% if ("user".equals(role)) { %>
+                <a href="UserBorrowHistoryController" class="item-header">Lịch sử mượn</a>
+                <a href="UserRequestHistoryController" class="item-header">Lịch sử yêu cầu</a>
+            <% } else if ("admin".equals(role)) { %>
+                <a href="admin/panel.jsp" class="item-header">Admin Panel</a>
+            <% } %>
+        </div>
+        <div class="function-header">
+            <form id="headerSearchForm" action="SearchBooks" method="get" style="display: flex; align-items: center;">
+                <input type="search" name="title" class="form-search" placeholder="Search for books...">
+                <i class="fa-solid fa-magnifying-glass search-icon" onclick="document.getElementById('headerSearchForm').submit();" style="cursor: pointer;"></i>
+            </form>
+            <% if(userName != null){ %>
+                <button class="sign-in" onclick="window.location.href='index.jsp'"><%= "🕴" + userName%></button>
+                <button class="regis-ter" onclick="window.location.href='LogoutController'">🚪 Logout</button>
+            <% } else { %>
+                <button class="sign-in" onclick="window.location.href='login.jsp'">Sign in</button>
+                <button class="regis-ter" onclick="window.location.href='register.jsp'">Register</button>
+            <% } %>
+            <a href="search.jsp" class="join">Join Library</a>  
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 style="text-align: center;">Lịch Sử Yêu Cầu Mượn Sách</h2>
+        <% if (history.isEmpty()) { %>
+            <p style="text-align: center;">Bạn chưa có yêu cầu nào.</p>
+        <% } else { %>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Tên sách</th>
+                        <th>Ngày yêu cầu</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (RequestDTO r : history) { %>
+                        <tr>
+                            <td><%= r.getBookTitle() %></td>
+                            <td><%= r.getRequestDate() %></td>
+                            <td>
+                                <%
+                                    String statusText = "";
+                                    String rawStatus = r.getStatus();
+                                    if ("approved".equalsIgnoreCase(rawStatus)) {
+                                        statusText = "Đã chấp nhận";
+                                    } else if ("rejected".equalsIgnoreCase(rawStatus)) {
+                                        statusText = "Bị từ chối";
+                                    } else if ("pending".equalsIgnoreCase(rawStatus)) {
+                                        statusText = "Đang chờ";
+                                    } else {
+                                        statusText = rawStatus;
+                                    }
+                                %>
+                                <span class="status-<%= rawStatus.toLowerCase() %>">
+                                    <%= statusText %>
+                                </span>
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        <% } %>
+    </div>
+</body>
+</html> 

@@ -46,8 +46,8 @@ public class LoginController extends HttpServlet {
                     response.sendRedirect("index.jsp");
                 }
             }else{
-                out.print("<h1>Email or Password incorrect</h1>");
-                out.print("<p><a href='index.jsp'>Home</a></p>");
+                request.setAttribute("errorMessage", "Email hoặc mật khẩu không chính xác.");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         }
     }

@@ -14,6 +14,7 @@ public class Record {
     private int recordId;
     private int bookId;
     private int userId;
+    private String userName;
     private String bookTitle;
     private Date borrowDate;
     private Date dueDate;
@@ -44,6 +45,14 @@ public class Record {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getBookTitle() {

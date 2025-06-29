@@ -103,4 +103,37 @@ public List<Record> getBorrowHistoryByUserId(int userId) {
     return -1;
 }
 
+    public List<Record> getAllBorrowRecords() {
+    List<Record> list = new ArrayList<>();
+    String sql = "SELECT br.id, br.book_id, br.user_id, br.borrow_date, br.due_date, " +
+                 "br.return_date, br.status, b.title AS book_title, u.name AS user_name " +
+                 "FROM borrow_records br " +
+                 "JOIN books b ON br.book_id = b.id " +
+                 "JOIN users u ON br.user_id = u.id " +
+                 "ORDER BY br.borrow_date DESC";
+
+    try (Connection con = DBUtils.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+            Record record = new Record();
+            record.setRecordId(rs.getInt("id"));
+            record.setBookId(rs.getInt("book_id"));
+            record.setUserId(rs.getInt("user_id"));
+            record.setBookTitle(rs.getString("book_title"));
+            record.setUserName(rs.getString("user_name"));
+            record.setBorrowDate(rs.getDate("borrow_date"));
+            record.setDueDate(rs.getDate("due_date"));
+            record.setReturnDate(rs.getDate("return_date"));
+            record.setStatus(rs.getString("status"));
+            list.add(record);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return list;
+}
+
 }

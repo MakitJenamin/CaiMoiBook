@@ -29,7 +29,14 @@
                     <label for="password">Password</label>
                     <input type="password" id="password" name="txtpassword" required>
                 </div>
-                <p style="color:red;"><%= request.getAttribute("error") != null ? request.getAttribute("error") : "" %></p>
+                <% 
+                    String errorMessage = (String) request.getAttribute("errorMessage");
+                    if (errorMessage != null) {
+                %>
+                    <p style="color:red; text-align: center; margin-bottom: 10px;"><%= errorMessage %></p>
+                <%
+                    }
+                %>
                 <div class="form-options">
                     <label class="remember-me">
                         <input type="checkbox" name="remember">

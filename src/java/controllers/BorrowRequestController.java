@@ -6,12 +6,13 @@ package controllers;
 
 import dao.BookDAO;
 import dto.Book;
-import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 /**
@@ -82,22 +83,23 @@ public class BorrowRequestController extends HttpServlet {
 
                 BookDAO dao = new BookDAO();
                 boolean success = dao.requestBook(userId, bookId);
+                
+                HttpSession session = request.getSession();
+                if (success) {
+                    session.setAttribute("message", "Yêu cầu mượn sách thành công!");
+                } else {
+                    session.setAttribute("message", "Yêu cầu mượn sách thất bại!");
+                }
 
-//                request.getRequestDispatcher("ShowBooks").forward(request, response); // Quay về lại trang danh sách  
         if ("search.jsp".equals(returnTo)) {
-            List<Book> result = dao.searchBooksAdvanced(title, author, category);
-            List<String> categories = dao.getAllCategories();
-            
-            request.setAttribute("searchResults", result);
-            request.setAttribute("title", title);
-            request.setAttribute("author", author);
-            request.setAttribute("category", category);
-            request.setAttribute("categories", categories);
-            request.getRequestDispatcher("search.jsp").forward(request, response);
+            // Redirect back to the search page with the same search parameters
+            String searchQuery = String.format("SearchBooks?title=%s&author=%s&category=%s", 
+                                               title != null ? title : "", 
+                                               author != null ? author : "", 
+                                               category != null ? category : "");
+            response.sendRedirect(searchQuery);
         } else {
-            List<Book> bookList = dao.getAllBooks();
-            request.setAttribute("bookList", bookList);
-            request.getRequestDispatcher("index.jsp").forward(request, response);
+            response.sendRedirect("ShowBooks");
         }
     }
 

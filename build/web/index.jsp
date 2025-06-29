@@ -2,6 +2,8 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="dto.Book" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
 <%
     String status = (String) session.getAttribute("status");
     if ("inactive".equalsIgnoreCase(status)) {
@@ -27,6 +29,14 @@
     if (books == null) {
         books = new ArrayList<>();
     }
+    Map<Integer, String> bookStatusMap = (Map<Integer, String>) request.getAttribute("bookStatusMap");
+    if (bookStatusMap == null) {
+        bookStatusMap = new HashMap<>();
+    }
+    String message = (String) session.getAttribute("message");
+    if (message != null) {
+        session.removeAttribute("message");
+    }
 %>
 <!DOCTYPE html>
 
@@ -48,16 +58,24 @@
         </div>
 
         <div class="nav-header">
-            <a href="#" class="item-header">Home</a>
-            <a href="#" class="item-header">Browse</a>
+            <a href="index.jsp" class="item-header">Home</a>
+            <a href="SearchBooks" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
             <a href="#" class="item-header">Contact</a>
+            <% if ("user".equals(role)) { %>
+                <a href="UserBorrowHistoryController" class="item-header">Lịch sử mượn</a>
+                <a href="UserRequestHistoryController" class="item-header">Lịch sử yêu cầu</a>
+            <% } else if ("admin".equals(role)) { %>
+                <a href="admin/panel.jsp" class="item-header">Admin Panel</a>
+            <% } %>
         </div>
 
         <div class="function-header">
-            <input type="search" class="form-search" placeholder="Search for books...">
-            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <form id="headerSearchForm" action="SearchBooks" method="get" style="display: flex; align-items: center;">
+                <input type="search" name="title" class="form-search" placeholder="Search for books...">
+                <i class="fa-solid fa-magnifying-glass search-icon" onclick="document.getElementById('headerSearchForm').submit();" style="cursor: pointer;"></i>
+            </form>
             
             <% if(userName != null){ %>
                 <button class="sign-in" onclick="window.location.href='index.jsp'"><%= "🕴" + userName%></button>
@@ -72,25 +90,17 @@
         </div>
 
     </div>
+    <% if (message != null) { %>
+        <div style="text-align: center; padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 5px; margin: 10px auto; width: 80%;">
+            <%= message %>
+        </div>
+    <% } %>
     <div class="container">
             <% if ("admin".equals(role)) { %>
     <div style="margin: 10px 0;">
-        <a href="AdminRequestController" style="color: red; font-weight: bold;">
-            🔧 Xử lý yêu cầu mượn sách
+        <a href="admin/panel.jsp" style="color: red; font-weight: bold; font-size: 1.2rem;">
+            🛠️ Vào trang quản trị
         </a>
-    </div>
-    <div style="margin: 10px 0;">
-        <a href="admin_manage_users.jsp" style="color: red; font-weight: bold;">
-            🔍 Quản lý tài khoản người dùng
-        </a>
-    </div>
-    <div style="margin: 10px 0;">
-        <a href="addBook.jsp" style="color: red; font-weight: bold;">
-            📚 Thêm sách
-        </a>
-    </div>
-    <div style="margin: 10px 0;">
-        <a href="ManageBooksController" class="admin-btn">📚 Quản lý sách</a>
     </div>
 <% } %>
             <% if ("user".equals(role)) { %>
@@ -153,7 +163,7 @@
         <!-- Book Card 1 -->
         <div class="book-card">
             <div class="book-image">
-              <img src="/placeholder.svg?height=300&width=200" alt="The Midnight Library" />
+              <img src="/placeholder.svg?height=300&width=200" alt="<%= b.getTitle() %>" />
             </div>
             <div class="book-info">
               <h3><%= b.getTitle() %></h3>
@@ -161,29 +171,36 @@
               <div class="rating">
                 <span class="star">★</span><span class="rating-value">4.2</span>
               </div>
-            <button onclick="showDetail('<%= b.getIsbn() %>', this)">Chi tiết</button>
-
-            <div class="book-detail-popup" style="display:none; border:1px solid #ccc; padding:10px; margin-top:10px;">
-                <!-- Nội dung chi tiết sẽ load ở đây -->
+              <div class="author">Số Lượng Có Thể Mượn : <%= b.getAvailableCopies() %></div>
+              <button class="btn-detail" onclick="window.location.href='BookDetailController?id=<%= b.getId() %>'
+">Chi tiết</button>
             </div>
-                <div class="author">Số Lượng Có Thể Mượn : <%= b.getAvailableCopies() %></div>
-
-            </div>
-            <% if ("user".equals(role)) { %>
-            <form action="BorrowRequestController" method="post">
+            <% if ("user".equals(role)) { 
+                String bookStatus = bookStatusMap.getOrDefault(b.getId(), "AVAILABLE");
+                if (b.getAvailableCopies() > 0 && "AVAILABLE".equals(bookStatus)) {
+            %>
+            <form action="BorrowRequestController" method="post" style="display:inline; width: 100%;">
                 <input type="hidden" name="bookId" value="<%= b.getId() %>">
                 <input type="hidden" name="userId" value="<%= userId %>">
-                <button type="submit">📚 Mượn sách</button>
-                
+                <input type="hidden" name="returnTo" value="index.jsp">
+                <button type="submit" class="btn-borrow">📚 Mượn sách</button>
             </form>
-        <% } %>              
+            <% } else if ("REQUESTED".equals(bookStatus)) { %>
+                <button disabled class="btn-requested">Đã yêu cầu</button>
+            <% } else if ("BORROWED".equals(bookStatus)) { %>
+                <button disabled class="btn-borrowed">Đã mượn</button>
+            <% } else { %>
+                <button disabled class="btn-disabled">Hết sách</button>
+            <% 
+                }
+            } %>              
         </div>
     <% } %>
 
       </div>
 
       <div class="view-all">
-        <button class="view-all-button">
+        <button class="view-all-button" onclick="window.location.href='SearchBooks'">
           View All New Arrivals
           <span class="arrow">→</span>
         </button>

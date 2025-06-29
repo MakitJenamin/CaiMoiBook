@@ -68,6 +68,22 @@
         <servlet-name>UpdateBookController</servlet-name>
         <servlet-class>controllers.UpdateBookController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UserRequestHistoryController</servlet-name>
+        <servlet-class>controllers.UserRequestHistoryController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminBorrowsController</servlet-name>
+        <servlet-class>controllers.AdminBorrowsController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminConfigController</servlet-name>
+        <servlet-class>controllers.AdminConfigController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>StatisticsController</servlet-name>
+        <servlet-class>controllers.StatisticsController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegisterController</servlet-name>
         <url-pattern>/RegisterController</url-pattern>
@@ -135,6 +151,22 @@
     <servlet-mapping>
         <servlet-name>UpdateBookController</servlet-name>
         <url-pattern>/UpdateBookController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserRequestHistoryController</servlet-name>
+        <url-pattern>/UserRequestHistoryController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminBorrowsController</servlet-name>
+        <url-pattern>/AdminBorrowsController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminConfigController</servlet-name>
+        <url-pattern>/AdminConfigController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StatisticsController</servlet-name>
+        <url-pattern>/StatisticsController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
