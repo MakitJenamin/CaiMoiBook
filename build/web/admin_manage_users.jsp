@@ -124,7 +124,7 @@
         </div>
         <div class="nav-header">
             <a href="<%= request.getContextPath() %>/index.jsp" class="item-header">Home</a>
-            <a href="<%= request.getContextPath() %>/SearchBooks" class="item-header">Browse</a>
+            <a href="<%= request.getContextPath() %>/MainController?action=search" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
             <a href="#" class="item-header">Contact</a>
@@ -133,13 +133,14 @@
             <% } %>
         </div>
         <div class="function-header">
-             <form id="headerSearchForm" action="<%= request.getContextPath() %>/SearchBooks" method="get" style="display: flex; align-items: center;">
+             <form id="headerSearchForm" action="<%= request.getContextPath() %>/MainController" method="get" style="display: flex; align-items: center;">
                 <input type="search" name="title" class="form-search" placeholder="Search for books...">
                 <i class="fa-solid fa-magnifying-glass search-icon" onclick="document.getElementById('headerSearchForm').submit();" style="cursor: pointer;"></i>
+                <input type="hidden" name="action" value="search">
             </form>
             <% if(userName != null){ %>
                 <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/index.jsp'"><%= "🕴" + userName%></button>
-                <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/LogoutController'">🚪 Logout</button>
+                <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/MainController?action=logout'">🚪 Logout</button>
             <% } else { %>
                 <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/login.jsp'">Sign in</button>
                 <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/register.jsp'">Register</button>
@@ -151,10 +152,11 @@
     <div class="container">
         <h2 style="text-align: center; margin-bottom: 20px;">🔍 Quản lý tài khoản người dùng</h2>
         <div class="search-container">
-            <form method="get" action="AdminUserManageController">
+            <form method="get" action="MainController">
                 <label for="email-search">Nhập email người dùng:</label>
                 <input id="email-search" type="text" name="email" required value="<%= request.getParameter("email") != null ? request.getParameter("email") : "" %>"/>
-                <button type="submit">Tìm kiếm</button>
+                <button type="submit" name="action" value="adminManage">Tìm kiếm</button>
+                <input type="hidden" name="action" value="adminManage">
             </form>
         </div>
 
@@ -170,7 +172,7 @@
                     </span>
                 </p>
 
-                <form method="post" action="AdminUserManageController">
+                <form method="post" action="MainController">
                     <input type="hidden" name="userId" value="<%= user.getId() %>" />
                     <input type="hidden" name="email" value="<%= user.getEmail() %>" />
                     <% if (user.getStatus().equals("active")) { %>
@@ -180,6 +182,7 @@
                         <input type="hidden" name="status" value="active" />
                         <button type="submit" class="activate">✅ Kích hoạt tài khoản</button>
                     <% } %>
+                    <input type="hidden" name="action" value="adminManage">
                 </form>
             </div>
         <% } else if (request.getParameter("email") != null) { %>

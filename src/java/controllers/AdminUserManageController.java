@@ -80,7 +80,7 @@ public class AdminUserManageController extends HttpServlet {
         int userId = Integer.parseInt(request.getParameter("userId"));
         String newStatus = request.getParameter("status");
         dao.updateUserStatus(userId, newStatus);
-        response.sendRedirect("AdminUserManageController?email=" + request.getParameter("email"));
+        response.sendRedirect("MainController?action=adminManage&email=" + request.getParameter("email"));
     }
 
     /**

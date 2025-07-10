@@ -137,7 +137,7 @@
         </div>
         <div class="nav-header">
             <a href="<%= request.getContextPath() %>/index.jsp" class="item-header">Home</a>
-            <a href="<%= request.getContextPath() %>/SearchBooks" class="item-header">Browse</a>
+            <a href="<%= request.getContextPath() %>/MainController?action=search" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
             <a href="#" class="item-header">Contact</a>
@@ -146,13 +146,14 @@
             <% } %>
         </div>
         <div class="function-header">
-             <form id="headerSearchForm" action="<%= request.getContextPath() %>/SearchBooks" method="get" style="display: flex; align-items: center;">
+             <form id="headerSearchForm" action="<%= request.getContextPath() %>/MainController" method="get" style="display: flex; align-items: center;">
                 <input type="search" name="title" class="form-search" placeholder="Search for books...">
                 <i class="fa-solid fa-magnifying-glass search-icon" onclick="document.getElementById('headerSearchForm').submit();" style="cursor: pointer;"></i>
+                <input type="hidden" name="action" value="search">
             </form>
             <% if(userName != null){ %>
                 <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/index.jsp'"><%= "🕴" + userName%></button>
-                <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/LogoutController'">🚪 Logout</button>
+                <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/MainController?action=logout'">🚪 Logout</button>
             <% } else { %>
                 <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/login.jsp'">Sign in</button>
                 <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/register.jsp'">Register</button>
@@ -167,8 +168,8 @@
         </div>
         
         <div class="filter-controls">
-            <a href="AdminBorrowsController" class="<%= (filter == null || !filter.equals("overdue")) ? "active" : "" %>">Xem tất cả</a>
-            <a href="AdminBorrowsController?filter=overdue" class="<%= "overdue".equals(filter) ? "active" : "" %>">Chỉ xem sách quá hạn</a>
+            <a href="MainController?action=adminBorrow" class="<%= (filter == null || !filter.equals("overdue")) ? "active" : "" %>">Xem tất cả</a>
+            <a href="MainController?action=adminBorrow&filter=overdue" class="<%= "overdue".equals(filter) ? "active" : "" %>">Chỉ xem sách quá hạn</a>
         </div>
 
         <div class="history-table-container">

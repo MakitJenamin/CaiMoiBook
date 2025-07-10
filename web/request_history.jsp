@@ -58,25 +58,26 @@
         </div>
         <div class="nav-header">
             <a href="index.jsp" class="item-header">Home</a>
-            <a href="SearchBooks" class="item-header">Browse</a>
+            <a href="MainController?action=search" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
             <a href="#" class="item-header">Contact</a>
             <% if ("user".equals(role)) { %>
-                <a href="UserBorrowHistoryController" class="item-header">Lịch sử mượn</a>
-                <a href="UserRequestHistoryController" class="item-header">Lịch sử yêu cầu</a>
+                <a href="MainController?action=history" class="item-header">Lịch sử mượn</a>
+                <a href="MainController?action=requestHistory" class="item-header">Lịch sử yêu cầu</a>
             <% } else if ("admin".equals(role)) { %>
                 <a href="admin/panel.jsp" class="item-header">Admin Panel</a>
             <% } %>
         </div>
         <div class="function-header">
-            <form id="headerSearchForm" action="SearchBooks" method="get" style="display: flex; align-items: center;">
+            <form id="headerSearchForm" action="MainController" method="get" style="display: flex; align-items: center;">
                 <input type="search" name="title" class="form-search" placeholder="Search for books...">
                 <i class="fa-solid fa-magnifying-glass search-icon" onclick="document.getElementById('headerSearchForm').submit();" style="cursor: pointer;"></i>
+                <input type="hidden" name="action" value="search">
             </form>
             <% if(userName != null){ %>
                 <button class="sign-in" onclick="window.location.href='index.jsp'"><%= "🕴" + userName%></button>
-                <button class="regis-ter" onclick="window.location.href='LogoutController'">🚪 Logout</button>
+                <button class="regis-ter" onclick="window.location.href='MainController?action=logout'">🚪 Logout</button>
             <% } else { %>
                 <button class="sign-in" onclick="window.location.href='login.jsp'">Sign in</button>
                 <button class="regis-ter" onclick="window.location.href='register.jsp'">Register</button>

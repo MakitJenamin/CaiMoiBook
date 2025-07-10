@@ -84,7 +84,7 @@ public class ReturnBookController extends HttpServlet {
                 BookDAO bookDAO = new BookDAO();
                 bookDAO.increaseAvailableCopies(bookId);
             
-            response.sendRedirect("UserBorrowHistoryController");
+            response.sendRedirect("MainController?action=history");
         } else {
             response.getWriter().println("Có lỗi xảy ra khi trả sách!");
         }

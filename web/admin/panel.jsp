@@ -64,7 +64,7 @@
         </div>
         <div class="nav-header">
             <a href="<%= request.getContextPath() %>/index.jsp" class="item-header">Home</a>
-            <a href="<%= request.getContextPath() %>/SearchBooks" class="item-header">Browse</a>
+            <a href="<%= request.getContextPath() %>/MainController?action=search" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
             <a href="#" class="item-header">Contact</a>
@@ -73,13 +73,14 @@
             <% } %>
         </div>
         <div class="function-header">
-             <form id="headerSearchForm" action="<%= request.getContextPath() %>/SearchBooks" method="get" style="display: flex; align-items: center;">
+             <form id="headerSearchForm" action="<%= request.getContextPath() %>/MainController" method="get" style="display: flex; align-items: center;">
                 <input type="search" name="title" class="form-search" placeholder="Search for books...">
+                <input type="hidden" name="action" value="search">
                 <i class="fa-solid fa-magnifying-glass search-icon" onclick="document.getElementById('headerSearchForm').submit();" style="cursor: pointer;"></i>
             </form>
             <% if(userName != null){ %>
                 <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/index.jsp'"><%= "🕴" + userName%></button>
-                <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/LogoutController'">🚪 Logout</button>
+                <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/MainController?action=logout'">🚪 Logout</button>
             <% } else { %>
                 <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/login.jsp'">Sign in</button>
                 <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/register.jsp'">Register</button>
@@ -91,15 +92,15 @@
     <div class="container">
         <h2 style="text-align: center;">🛠️ Admin Panel</h2>
         <div class="panel-grid">
-            <a href="<%= request.getContextPath() %>/AdminRequestController" class="panel-card">
+            <a href="<%= request.getContextPath() %>/MainController?action=adminRequest" class="panel-card">
                 <h3>Xử lý Yêu cầu</h3>
                 <p>Chấp nhận hoặc từ chối yêu cầu mượn sách từ người dùng.</p>
             </a>
-            <a href="<%= request.getContextPath() %>/AdminBorrowsController" class="panel-card">
+            <a href="<%= request.getContextPath() %>/MainController?action=adminBorrow" class="panel-card">
                 <h3>Lịch sử Mượn/Trả</h3>
                 <p>Xem toàn bộ lịch sử mượn và trả sách của tất cả người dùng.</p>
             </a>
-            <a href="<%= request.getContextPath() %>/StatisticsController" class="panel-card">
+            <a href="<%= request.getContextPath() %>/MainController?action=statistics" class="panel-card">
                 <h3>Thống kê</h3>
                 <p>Xem các số liệu thống kê tổng quan về hoạt động của thư viện.</p>
             </a>
@@ -111,11 +112,11 @@
                 <h3>Thêm Sách mới</h3>
                 <p>Thêm một đầu sách mới vào thư viện.</p>
             </a>
-            <a href="<%= request.getContextPath() %>/ManageBooksController" class="panel-card">
+            <a href="<%= request.getContextPath() %>/MainController?action=manage" class="panel-card">
                 <h3>Quản lý Sách</h3>
                 <p>Chỉnh sửa hoặc xóa các đầu sách hiện có.</p>
             </a>
-            <a href="<%= request.getContextPath() %>/AdminConfigController" class="panel-card">
+            <a href="<%= request.getContextPath() %>/MainController?action=adminConfig" class="panel-card">
                 <h3>Cấu hình Hệ thống</h3>
                 <p>Chỉnh sửa các tham số và quy định của thư viện.</p>
             </a>

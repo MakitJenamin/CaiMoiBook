@@ -20,7 +20,7 @@
                 <h2>Create Account</h2>
                 <p>Join our online library community!</p>
             </div>
-            <form class="login-form" action="RegisterController" method="post">
+            <form class="login-form" action="MainController" method="post">
                 <div class="form-group">
                     <label for="fullname">Full Name</label>
                     <input type="text" id="fullname" name="fullname" required>
@@ -47,7 +47,7 @@
                         <span>I agree to the <a href="#" class="terms-link">Terms & Conditions</a></span>
                     </label>
                 </div>
-                <button type="submit" class="login-button">Create Account</button>
+                <button type="submit" name = "action" value = "register" class="login-button">Create Account</button>
                 <div class="register-link">
                     Already have an account? <a href="login.jsp">Login here</a>
                 </div>

@@ -20,7 +20,7 @@
                 <h2>Login</h2>
                 <p>Welcome to online library!</p>
             </div>
-            <form class="login-form" action="LoginController" method="post">
+            <form class="login-form" action="MainController" method="post">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="text" id="email" name="txtemail" required>
@@ -44,7 +44,7 @@
                     </label>
                     <a href="#" class="forgot-password">Forgot password?</a>
                 </div>
-                <button type="submit" class="login-button">Login</button>
+                <button type="submit" name = "action" value="login" class="login-button">Login</button>
                 <div class="register-link">
                     Don't have an account? <a href="register.jsp">Sign up now</a>
                 </div>

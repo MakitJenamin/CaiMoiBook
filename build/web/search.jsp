@@ -51,27 +51,28 @@
 
         <div class="nav-header">
             <a href="index.jsp" class="item-header">Home</a>
-            <a href="SearchBooks" class="item-header">Browse</a>
+            <a href="MainController?action=search" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
             <a href="#" class="item-header">Contact</a>
             <% if ("user".equals(role)) { %>
-                <a href="UserBorrowHistoryController" class="item-header">Lịch sử mượn</a>
-                <a href="UserRequestHistoryController" class="item-header">Lịch sử yêu cầu</a>
+                <a href="MainController?action=history" class="item-header">Lịch sử mượn</a>
+                <a href="MainController?action=requestHistory" class="item-header">Lịch sử yêu cầu</a>
             <% } else if ("admin".equals(role)) { %>
                 <a href="admin/panel.jsp" class="item-header">Admin Panel</a>
             <% } %>
         </div>
 
         <div class="function-header">
-            <form id="headerSearchForm" action="SearchBooks" method="get" style="display: flex; align-items: center;">
+            <form id="headerSearchForm" action="MainController" method="get" style="display: flex; align-items: center;">
                 <input type="search" name="title" class="form-search" placeholder="Search for books...">
                 <i class="fa-solid fa-magnifying-glass search-icon" onclick="document.getElementById('headerSearchForm').submit();" style="cursor: pointer;"></i>
+                <input type="hidden" name="action" value="search">
             </form>
             
             <% if(userName != null){ %>
                 <button class="sign-in" onclick="window.location.href='index.jsp'"><%= "🕴" + userName%></button>
-                <button class="regis-ter" onclick="window.location.href='LogoutController'">🚪 Logout</button>
+                <button class="regis-ter" onclick="window.location.href='MainController?action=logout'">🚪 Logout</button>
             <% } else { %>
                 <button class="sign-in" onclick="window.location.href='login.jsp'">Sign in</button>
                 <button class="regis-ter" onclick="window.location.href='register.jsp'">Register</button>
@@ -83,7 +84,7 @@
     
     <div class="container" style="padding-top: 20px;">
         <h2 style="text-align:center;">🔍 Tìm kiếm sách</h2>
-        <form method="get" action="SearchBooks" style="text-align:center; margin-bottom: 20px;">
+        <form method="get" action="MainController" style="text-align:center; margin-bottom: 20px;">
             <input type="text" name="title" placeholder="Tiêu đề sách" value= "<%= title %>"/>
             <input type="text" name="author" placeholder="Tác giả" value= "<%= author %>"/>
             <select name="category">
@@ -95,7 +96,7 @@
                     <option value="<%= cat %>" <%= selected %>><%= cat %></option>
                 <%  }} %>
             </select>
-            <button type="submit">Tìm</button>
+            <button type="submit" name="action" value="search">Tìm</button>
         </form>
 
         <div class="book-grid">
@@ -111,20 +112,20 @@
                         <p>Thể loại: <%= b.getCategory() %></p>
                         <p>Năm: <%= b.getPublishedYear() %></p>
                         <p>Còn lại: <%= b.getAvailableCopies() %></p>
-                        <button class="btn-detail" onclick="window.location.href='BookDetailController?id=<%= b.getId() %>'
+                        <button class="btn-detail" onclick="window.location.href='MainController?action=detail&id=<%= b.getId() %>'
 ">Chi tiết</button>
                         <% if ("user".equals(role)) { 
                             String bookStatus = bookStatusMap.getOrDefault(b.getId(), "AVAILABLE");
                             if (b.getAvailableCopies() > 0 && "AVAILABLE".equals(bookStatus)) {
                         %>
-                        <form action="BorrowRequestController" method="post" style="display:inline; width: 100%;">
+                        <form action="MainController" method="post" style="display:inline; width: 100%;">
                             <input type="hidden" name="userId" value="<%= userId %>">
                             <input type="hidden" name="bookId" value="<%= b.getId() %>">
                             <input type="hidden" name="returnTo" value="search.jsp">
                             <input type="hidden" name="title" value="<%= title %>">
                             <input type="hidden" name="author" value="<%= author %>">
                             <input type="hidden" name="category" value="<%= category %>">
-                            <button type="submit" class="btn-borrow">📚 Mượn sách</button>
+                            <button type="submit" name="action" value="borrow" class="btn-borrow">📚 Mượn sách</button>
                         </form>
                         <% } else if ("REQUESTED".equals(bookStatus)) { %>
                             <button disabled class="btn-requested">Đã yêu cầu</button>

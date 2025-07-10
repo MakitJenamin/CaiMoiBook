@@ -15,7 +15,7 @@
     String userName = (String) session.getAttribute("userName");
     Book book = (Book) request.getAttribute("book");
     if (book == null) {
-        response.sendRedirect("ManageBooksController");
+        response.sendRedirect("MainController?action=manage");
         return;
     }
 %>
@@ -114,7 +114,7 @@
         </div>
         <div class="nav-header">
             <a href="<%= request.getContextPath() %>/index.jsp" class="item-header">Home</a>
-            <a href="<%= request.getContextPath() %>/SearchBooks" class="item-header">Browse</a>
+            <a href="<%= request.getContextPath() %>/MainController?action=search" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
             <a href="#" class="item-header">Contact</a>
@@ -123,13 +123,14 @@
             <% } %>
         </div>
         <div class="function-header">
-             <form id="headerSearchForm" action="<%= request.getContextPath() %>/SearchBooks" method="get" style="display: flex; align-items: center;">
+             <form id="headerSearchForm" action="<%= request.getContextPath() %>/MainController" method="get" style="display: flex; align-items: center;">
                 <input type="search" name="title" class="form-search" placeholder="Search for books...">
+                <input type="hidden" name="action" value="search">
                 <i class="fa-solid fa-magnifying-glass search-icon" onclick="document.getElementById('headerSearchForm').submit();" style="cursor: pointer;"></i>
             </form>
             <% if(userName != null){ %>
                 <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/index.jsp'"><%= "🕴" + userName%></button>
-                <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/LogoutController'">🚪 Logout</button>
+                <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/MainController?action=logout'">🚪 Logout</button>
             <% } else { %>
                 <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/login.jsp'">Sign in</button>
                 <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/register.jsp'">Register</button>
@@ -141,7 +142,7 @@
     <div class="container">
         <div class="form-container">
             <h2>✏️ Chỉnh sửa thông tin sách</h2>
-            <form action="UpdateBookController" method="post" class="form-grid">
+            <form action="MainController" method="post" class="form-grid">
                 <input type="hidden" name="id" value="<%= book.getId() %>">
 
                 <div class="form-group full-width">
@@ -188,8 +189,8 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit">💾 Cập nhật</button>
-                    <a href="ManageBooksController" class="cancel-btn">↩️ Quay lại</a>
+                    <button type="submit" name="action" value="updateBook">💾 Cập nhật</button>
+                    <a href="MainController?action=manage" class="cancel-btn">↩️ Quay lại</a>
                 </div>
             </form>
         </div>

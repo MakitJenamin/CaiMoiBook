@@ -98,7 +98,7 @@ public class HandleRequestController extends HttpServlet {
             dao.rejectRequest(requestId);
         }
 
-        response.sendRedirect("AdminRequestController");
+        response.sendRedirect("MainController?action=adminRequest");
     }
 
     /**

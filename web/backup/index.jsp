@@ -4,7 +4,7 @@
 <%@ page import="dto.Book" %>
 <%
     if (request.getAttribute("bookList") == null) {
-        response.sendRedirect("ShowBooks");
+        response.sendRedirect("MainController?action=search");
         return;
     }
 %>
@@ -74,26 +74,28 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
     <body>
     <div style="background:#999661; height:50px;padding: 20px; " >
     <a href="index.jsp">home</a>|<a href="Login.html">Login</a>
-    <form action="SearchBooks" style="float:right" method="get">
+    <form action="MainController" style="float:right" method="get">
             <input type="text" name="txtsearch" />
+            <input type="hidden" name="action" value="search" />
             <input type="submit" value="find"/>
     </form>
     </div>    
     <div style="float:left; width: 70%;">coming soon</div>   
     <% if ("admin".equals(role)) { %>
     <div style="margin: 10px 0;">
-        <a href="AdminRequestController" style="color: red; font-weight: bold;">
+        <a href="MainController?action=adminRequest" style="color: red; font-weight: bold;">
             🔧 Xử lý yêu cầu mượn sách
         </a>
     </div>
 <% } %>
 
     <div style="float:left; width: 30%; background: #ffffcc;">       
-        <form action="RegisterController" style=" padding: 5%" method="post">
+        <form action="MainController" style=" padding: 5%" method="post">
             <p>name:<input type="text" name="txtname" required>*</p>
             <p>email<input type="text" name="txtemail" required>*</p>
             <p>password:<input type="password" name="txtpassword" required>*</p>
             <p>confirm password:<input type="password" name="txtconfirmpassword" required>*</p>
+            <input type="hidden" name="action" value="register" />
             <p><input type="submit" name="btn" value="submit"></p>
         </form>
       </div>
@@ -110,9 +112,10 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Html.html to edit thi
             <div class="book-date">📅 <%= b.getPublishedYear() %></div>
                         <div class="book-date">Số Lượng Có Thể Mượn : <%= b.getAvailableCopies() %></div>
             <% if ("user".equals(role)) { %>
-            <form action="BorrowRequestController" method="post">
+            <form action="MainController" method="post">
                 <input type="hidden" name="bookId" value="<%= b.getId() %>">
                 <input type="hidden" name="userId" value="<%= userId %>">
+                <input type="hidden" name="action" value="borrow" />
                 <button type="submit">📚 Mượn sách</button>
                 
             </form>

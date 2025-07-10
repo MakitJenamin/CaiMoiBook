@@ -97,9 +97,9 @@ public class BorrowRequestController extends HttpServlet {
                                                title != null ? title : "", 
                                                author != null ? author : "", 
                                                category != null ? category : "");
-            response.sendRedirect(searchQuery);
+            response.sendRedirect("MainController?action=search");
         } else {
-            response.sendRedirect("ShowBooks");
+            response.sendRedirect("MainController?action=search");
         }
     }
 
