@@ -27,26 +27,46 @@ public class RegisterController extends HttpServlet {
         String name = request.getParameter("txtname");
         String email = request.getParameter("txtemail");
         String pass = request.getParameter("txtpassword");
-        PrintWriter out = response.getWriter();
-        if (name != null && email != null && pass != null) {
+        String confirmPass = request.getParameter("confirm-password");
+        
+        if (name != null && email != null && pass != null && confirmPass != null) {
+            // Kiểm tra mật khẩu và xác nhận mật khẩu có khớp nhau không
+            if (!pass.equals(confirmPass)) {
+                request.setAttribute("errorMessage", "Mật khẩu và xác nhận mật khẩu không khớp.");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+                return;
+            }
+            
+            // Kiểm tra độ dài mật khẩu
+            if (pass.length() < 6) {
+                request.setAttribute("errorMessage", "Mật khẩu phải có ít nhất 6 ký tự.");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+                return;
+            }
+            
             // check email la duy nhat trong DB
             UserDAO d = new UserDAO();
             User us = d.getUserByEmail(email);
             if (us == null) {
                 int result = d.insertNewUser(name, email, pass);
                 if (result >= 1) {
-                    out.print("<h1>Inserted!!!!</h1>");
-                    out.print("<p><a href='index.jsp'>home</a></p>");
+                    // Đăng ký thành công
+                    request.setAttribute("successMessage", "Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
+                    request.getRequestDispatcher("register.jsp").forward(request, response);
                 } else {
-                    out.print("<h1>no insert</h1>");
-                    out.print("<p><a href='index.jsp'>home</a></p>");
+                    // Lỗi khi thêm user
+                    request.setAttribute("errorMessage", "Có lỗi xảy ra khi đăng ký. Vui lòng thử lại.");
+                    request.getRequestDispatcher("register.jsp").forward(request, response);
                 }
             } else {
-                out.print("<h1>duplicate email</h1>");
-                out.print("<p><a href='index.jsp'>home</a></p>");
+                // Email đã tồn tại
+                request.setAttribute("errorMessage", "Email này đã được sử dụng. Vui lòng chọn email khác.");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
             }
+        } else {
+            // Dữ liệu không hợp lệ
+            request.setAttribute("errorMessage", "Vui lòng điền đầy đủ thông tin.");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
         }
-
     }
-
 }

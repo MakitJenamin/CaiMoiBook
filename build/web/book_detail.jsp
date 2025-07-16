@@ -67,7 +67,7 @@
             <span class="titleName">LibraryOnline</span>
         </div>
         <div class="nav-header">
-            <a href="index.jsp" class="item-header">Home</a>
+            <a href="MainController?action=home" class="item-header">Home</a>
             <a href="MainController?action=search" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
@@ -75,6 +75,8 @@
             <% if ("user".equals(role)) { %>
                 <a href="MainController?action=history" class="item-header">Lịch sử mượn</a>
                 <a href="MainController?action=requestHistory" class="item-header">Lịch sử yêu cầu</a>
+            <% } else if ("admin".equals(role)) { %>
+                <a href="admin/panel.jsp" class="item-header">Admin Panel</a>
             <% } %>
         </div>
         <div class="function-header">
@@ -84,7 +86,7 @@
                 <i class="fa-solid fa-magnifying-glass search-icon" onclick="document.getElementById('headerSearchForm').submit();" style="cursor: pointer;"></i>
             </form>
             <% if(userName != null){ %>
-                <button class="sign-in" onclick="window.location.href='index.jsp'"><%= "🕴" + userName%></button>
+                <button class="sign-in" onclick="window.location.href='MainController?action=profile'"><%= "🕴" + userName%></button>
                 <button class="regis-ter" onclick="window.location.href='MainController?action=logout'">🚪 Logout</button>
             <% } else { %>
                 <button class="sign-in" onclick="window.location.href='login.jsp'">Sign in</button>

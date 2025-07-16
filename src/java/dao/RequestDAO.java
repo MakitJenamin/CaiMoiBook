@@ -69,4 +69,18 @@ public class RequestDAO {
         }
         return list;
     }
+    
+    public boolean cancelRequest(int requestId, int userId) {
+        String sql = "UPDATE book_requests SET status = 'cancelled' WHERE id = ? AND user_id = ? AND status = 'pending'";
+        try (Connection conn = DBUtils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, requestId);
+            ps.setInt(2, userId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

@@ -19,7 +19,7 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        request.getRequestDispatcher("login.jsp").forward(request, response);
     }
 
     @Override
@@ -32,24 +32,30 @@ public class LoginController extends HttpServlet {
             UserDAO d = new UserDAO();
             User user = d.getUser(email, password);
             if(user !=null){
-        HttpSession session = request.getSession();
-        session.setAttribute("userId", user.getId());   
-        session.setAttribute("userName", user.getName());
-        session.setAttribute("role", user.getRole());
-        session.setAttribute("status", user.getStatus());
-                String role = user.getRole();
-                if(role.equalsIgnoreCase("admin")){
-                    // welcome coming soon
-                    // dung redirect chuyen trang auto
-                    response.sendRedirect("index.jsp");
-                }else{
-                    response.sendRedirect("index.jsp");
+                HttpSession session = request.getSession();
+                session.setAttribute("userId", user.getId());   
+                session.setAttribute("userName", user.getName());
+                session.setAttribute("role", user.getRole());
+                session.setAttribute("status", user.getStatus());
+                
+                // Kiểm tra nếu có URL chuyển hướng được lưu trong session
+                String redirectURL = (String) session.getAttribute("redirectURL");
+                if (redirectURL != null) {
+                    session.removeAttribute("redirectURL"); // Xóa URL chuyển hướng khỏi session
+                    response.sendRedirect(redirectURL);
+                } else {
+                    // Nếu không có URL chuyển hướng, chuyển hướng theo vai trò
+                    String role = user.getRole();
+                    if(role.equalsIgnoreCase("admin")){
+                        response.sendRedirect("index.jsp");
+                    } else {
+                        response.sendRedirect("index.jsp");
+                    }
                 }
-            }else{
+            } else {
                 request.setAttribute("errorMessage", "Email hoặc mật khẩu không chính xác.");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
         }
     }
-
 }

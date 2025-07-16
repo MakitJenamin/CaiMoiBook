@@ -5,10 +5,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     String role = (String) session.getAttribute("role");
-    if (!"admin".equals(role)) {
-        response.sendRedirect(request.getContextPath() + "/index.jsp");
-        return;
-    }
     String userName = (String) session.getAttribute("userName");
 
     int totalBooks = (int) request.getAttribute("totalBooks");
@@ -50,7 +46,7 @@
             <span class="titleName">LibraryOnline</span>
         </div>
         <div class="nav-header">
-            <a href="<%= request.getContextPath() %>/index.jsp" class="item-header">Home</a>
+            <a href="<%= request.getContextPath() %>/MainController?action=home" class="item-header">Home</a>
             <a href="<%= request.getContextPath() %>/MainController?action=search" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
@@ -66,7 +62,7 @@
                 <input type="hidden" name="action" value="search">
             </form>
             <% if(userName != null){ %>
-                <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/index.jsp'"><%= "🕴" + userName%></button>
+                <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/MainController?action=profile'"><%= "🕴" + userName%></button>
                 <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/MainController?action=logout'">🚪 Logout</button>
             <% } else { %>
                 <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/login.jsp'">Sign in</button>

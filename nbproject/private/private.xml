@@ -3,33 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/admin/requests.jsp</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/css/styleindex.css</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/controllers/BookDetailController.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/dto/User.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/controllers/SearchBooks.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/index.jsp</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/dto/RequestDTO.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/UserDashboard.jsp</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/AdminDashboard.html</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/UserDashboard.html</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/controllers/BorrowRequestController.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/dto/Book.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/mylib/DBUtils.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/controllers/AdminRequestController.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/dao/BookDAO.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/Login.html</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/WEB-INF/web.xml</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/controllers/ShowBooksController.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/register.jsp</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/controllers/LoginController.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/search.jsp</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/login.jsp</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/css/login.css</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/controllers/RegisterController.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/controllers/HandleRequestController.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/src/java/dao/UserDAO.java</file>
-            <file>file:/C:/Subjects_/PRJ_/demoJDBC/demoJDBC/web/META-INF/context.xml</file>
+            <file>file:/C:/Users/nat/Documents/NetBeansProjects/CaiMoiBook/src/java/controllers/SearchBooks.java</file>
+            <file>file:/C:/Users/nat/Documents/NetBeansProjects/CaiMoiBook/src/java/controllers/MainController.java</file>
+            <file>file:/C:/Users/nat/Documents/NetBeansProjects/CaiMoiBook/web/index.jsp</file>
+            <file>file:/C:/Users/nat/Documents/NetBeansProjects/CaiMoiBook/src/java/controllers/AddBookController.java</file>
+            <file>file:/C:/Users/nat/Documents/NetBeansProjects/CaiMoiBook/src/java/controllers/ShowBooksController.java</file>
         </group>
     </open-files>
 </project-private>

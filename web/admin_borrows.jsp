@@ -9,10 +9,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     String role = (String) session.getAttribute("role");
-    if (!"admin".equals(role)) {
-        response.sendRedirect(request.getContextPath() + "/index.jsp");
-        return;
-    }
     String userName = (String) session.getAttribute("userName");
     List<Record> borrowList = (List<Record>) request.getAttribute("borrowList");
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -40,6 +36,8 @@
     }
     
     String filter = request.getParameter("filter");
+    String successMessage = (String) request.getAttribute("successMessage");
+    String errorMessage = (String) request.getAttribute("errorMessage");
 %>
 <!DOCTYPE html>
 <html>
@@ -127,6 +125,34 @@
             background-color: #007bff;
             color: #fff;
         }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .btn-confirm {
+            padding: 6px 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .btn-confirm:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -136,7 +162,7 @@
             <span class="titleName">LibraryOnline</span>
         </div>
         <div class="nav-header">
-            <a href="<%= request.getContextPath() %>/index.jsp" class="item-header">Home</a>
+            <a href="<%= request.getContextPath() %>/MainController?action=home" class="item-header">Home</a>
             <a href="<%= request.getContextPath() %>/MainController?action=search" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
@@ -152,7 +178,7 @@
                 <input type="hidden" name="action" value="search">
             </form>
             <% if(userName != null){ %>
-                <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/index.jsp'"><%= "🕴" + userName%></button>
+                <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/MainController?action=profile'"><%= "🕴" + userName%></button>
                 <button class="regis-ter" onclick="window.location.href='<%= request.getContextPath() %>/MainController?action=logout'">🚪 Logout</button>
             <% } else { %>
                 <button class="sign-in" onclick="window.location.href='<%= request.getContextPath() %>/login.jsp'">Sign in</button>
@@ -166,6 +192,18 @@
         <div class="page-header">
             <h1>Lịch sử mượn trả sách</h1>
         </div>
+        
+        <% if (successMessage != null) { %>
+            <div class="alert alert-success">
+                <%= successMessage %>
+            </div>
+        <% } %>
+        
+        <% if (errorMessage != null) { %>
+            <div class="alert alert-danger">
+                <%= errorMessage %>
+            </div>
+        <% } %>
         
         <div class="filter-controls">
             <a href="MainController?action=adminBorrow" class="<%= (filter == null || !filter.equals("overdue")) ? "active" : "" %>">Xem tất cả</a>
@@ -184,6 +222,7 @@
                         <th>Ngày trả</th>
                         <th>Trạng thái</th>
                         <th>Phí trễ hạn</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -239,12 +278,21 @@
                         <td class="<%= fee > 0 ? "fee-cell" : "" %>">
                             <%= currencyFormatter.format(fee) %>
                         </td>
+                        <td>
+                            <% if ("borrowed".equalsIgnoreCase(record.getStatus())) { %>
+                                <form action="<%= request.getContextPath() %>/MainController" method="post" style="margin: 0;">
+                                    <input type="hidden" name="recordId" value="<%= record.getRecordId() %>">
+                                    <input type="hidden" name="action" value="adminConfirmReturn">
+                                    <button type="submit" class="btn-confirm">Xác nhận trả sách</button>
+                                </form>
+                            <% } %>
+                        </td>
                     </tr>
                     <% } 
                     if (displayedRows == 0) {
                     %>
                         <tr>
-                            <td colspan="7" class="no-records">
+                            <td colspan="8" class="no-records">
                                 <p>Không có bản ghi nào phù hợp với bộ lọc.</p>
                             </td>
                         </tr>

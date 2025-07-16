@@ -9,6 +9,8 @@
     if (history == null) {
         history = new ArrayList<>();
     }
+    String successMessage = (String) request.getAttribute("successMessage");
+    String errorMessage = (String) request.getAttribute("errorMessage");
 %>
 <!DOCTYPE html>
 <html>
@@ -48,6 +50,34 @@
         .status-approved { color: #28a745; font-weight: bold; }
         .status-pending { color: #ffc107; font-weight: bold; }
         .status-rejected { color: #dc3545; font-weight: bold; }
+        .status-cancelled { color: #6c757d; font-weight: bold; }
+        .cancel-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .cancel-btn:hover {
+            background-color: #c82333;
+        }
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
@@ -57,7 +87,7 @@
             <span class="titleName">LibraryOnline</span>
         </div>
         <div class="nav-header">
-            <a href="index.jsp" class="item-header">Home</a>
+            <a href="MainController?action=home" class="item-header">Home</a>
             <a href="MainController?action=search" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
@@ -76,7 +106,7 @@
                 <input type="hidden" name="action" value="search">
             </form>
             <% if(userName != null){ %>
-                <button class="sign-in" onclick="window.location.href='index.jsp'"><%= "🕴" + userName%></button>
+                <button class="sign-in" onclick="window.location.href='MainController?action=profile'"><%= "🕴" + userName%></button>
                 <button class="regis-ter" onclick="window.location.href='MainController?action=logout'">🚪 Logout</button>
             <% } else { %>
                 <button class="sign-in" onclick="window.location.href='login.jsp'">Sign in</button>
@@ -88,6 +118,15 @@
 
     <div class="container">
         <h2 style="text-align: center;">Lịch Sử Yêu Cầu Mượn Sách</h2>
+        
+        <% if (successMessage != null) { %>
+            <div class="alert alert-success"><%= successMessage %></div>
+        <% } %>
+        
+        <% if (errorMessage != null) { %>
+            <div class="alert alert-danger"><%= errorMessage %></div>
+        <% } %>
+        
         <% if (history.isEmpty()) { %>
             <p style="text-align: center;">Bạn chưa có yêu cầu nào.</p>
         <% } else { %>
@@ -97,6 +136,7 @@
                         <th>Tên sách</th>
                         <th>Ngày yêu cầu</th>
                         <th>Trạng thái</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -114,6 +154,8 @@
                                         statusText = "Bị từ chối";
                                     } else if ("pending".equalsIgnoreCase(rawStatus)) {
                                         statusText = "Đang chờ";
+                                    } else if ("cancelled".equalsIgnoreCase(rawStatus)) {
+                                        statusText = "Đã hủy";
                                     } else {
                                         statusText = rawStatus;
                                     }
@@ -121,6 +163,15 @@
                                 <span class="status-<%= rawStatus.toLowerCase() %>">
                                     <%= statusText %>
                                 </span>
+                            </td>
+                            <td>
+                                <% if ("pending".equalsIgnoreCase(r.getStatus())) { %>
+                                    <a href="MainController?action=cancelRequest&requestId=<%= r.getRequestId() %>" 
+                                       class="cancel-btn" 
+                                       onclick="return confirm('Bạn có chắc chắn muốn hủy yêu cầu này không?')">
+                                        Hủy yêu cầu
+                                    </a>
+                                <% } %>
                             </td>
                         </tr>
                     <% } %>

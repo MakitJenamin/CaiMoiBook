@@ -9,10 +9,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     String role = (String) session.getAttribute("role");
-    if (!"admin".equals(role)) {
-        response.sendRedirect(request.getContextPath() + "/index.jsp");
-        return;
-    }
     String userName = (String) session.getAttribute("userName");
     BookDAO dao = new BookDAO();
     List<String> categories = dao.getAllCategories();
@@ -107,7 +103,7 @@
                 <span class="titleName">LibraryOnline</span>
             </div>
             <div class="nav-header">
-                <a href="<%= request.getContextPath() %>/index.jsp" class="item-header">Home</a>
+                <a href="<%= request.getContextPath() %>/MainController?action=home" class="item-header">Home</a>
                 <a href="<%= request.getContextPath() %>/MainController?action=search" class="item-header">Browse</a>
                 <a href="#" class="item-header">Categories</a>
                 <a href="#" class="item-header">About</a>

@@ -29,8 +29,8 @@ public class MainController extends HttpServlet {
             }
 
             switch (action) {
-                case "HOME":
-                    url = "Login.jsp";
+                case "home":
+                    url = "ShowBooks";
                     break;
                 case "login":
                     url = "LoginController";
@@ -65,6 +65,9 @@ public class MainController extends HttpServlet {
                 case "adminBorrow":
                     url = "AdminBorrowsController";
                     break;
+                case "adminConfirmReturn":
+                    url = "AdminConfirmReturnController";
+                    break;
                 case "statistics":
                     url = "StatisticsController";
                     break;
@@ -94,6 +97,9 @@ public class MainController extends HttpServlet {
                     break;
                 case "requestHistory":
                     url = "UserRequestHistoryController";
+                    break;
+                case "cancelRequest":
+                    url = "CancelRequestController";
                     break;
                 
             }

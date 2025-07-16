@@ -3,10 +3,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     String role = (String) session.getAttribute("role");
-    if (!"admin".equals(role)) {
-        response.sendRedirect(request.getContextPath() + "/index.jsp");
-        return;
-    }
     String userName = (String) session.getAttribute("userName");
     List<Configuration> configList = (List<Configuration>) request.getAttribute("configList");
     String message = (String) request.getAttribute("message");
@@ -35,6 +31,12 @@
         .message, .error { text-align: center; padding: 15px; margin: 0 auto 20px auto; border-radius: 5px; max-width: 820px; }
         .message { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .admin-tools { margin-top: 30px; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .admin-tools h2 { margin-top: 0; color: #333; }
+        .admin-tools ul { padding-left: 20px; }
+        .admin-tools li { margin-bottom: 10px; }
+        .admin-tools a { color: #007bff; text-decoration: none; font-weight: 500; }
+        .admin-tools a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -44,7 +46,7 @@
             <span class="titleName">LibraryOnline</span>
         </div>
         <div class="nav-header">
-            <a href="<%= request.getContextPath() %>/index.jsp" class="item-header">Home</a>
+            <a href="<%= request.getContextPath() %>/MainController?action=home" class="item-header">Home</a>
             <a href="<%= request.getContextPath() %>/MainController?action=search" class="item-header">Browse</a>
             <a href="#" class="item-header">Categories</a>
             <a href="#" class="item-header">About</a>
@@ -96,6 +98,16 @@
                 </div>
             </form>
         </div>
+        
+        <!-- Admin Tools Section -->
+        <% if ("admin".equals(role)) { %>
+        <div class="admin-tools">
+            <h2>Admin Tools</h2>
+            <ul>
+                <li><a href="<%= request.getContextPath() %>/admin/migratePasswords">Migrate Passwords</a> - Convert plain text passwords to secure hashed passwords</li>
+            </ul>
+        </div>
+        <% } %>
     </div>
 </body>
 </html> 
