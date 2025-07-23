@@ -82,10 +82,6 @@
                     <input type="email" id="email" name="txtemail" required>
                 </div>
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="txtname" required>
-                </div>
-                <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="txtpassword" required>
                     <div class="error-text" id="passwordError"></div>

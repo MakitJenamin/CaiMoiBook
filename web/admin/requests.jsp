@@ -15,6 +15,10 @@
     if (requests == null) {
         requests = new ArrayList<>();
     }
+    
+    // Lấy thông báo thành công/lỗi (nếu có)
+    String successMessage = (String) request.getAttribute("successMessage");
+    String errorMessage = (String) request.getAttribute("errorMessage");
 %>
 <!DOCTYPE html>
 <html>
@@ -59,11 +63,49 @@
             cursor: pointer;
             color: white;
             font-weight: 500;
+            margin-right: 5px;
         }
         .btn-approve { background-color: #28a745; }
         .btn-approve:hover { background-color: #218838; }
         .btn-reject { background-color: #dc3545; }
         .btn-reject:hover { background-color: #c82333; }
+        .btn-confirm { background-color: #007bff; }
+        .btn-confirm:hover { background-color: #0069d9; }
+        .status-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 500;
+            margin-right: 8px;
+        }
+        .status-pending {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .status-approved {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-completed {
+            background-color: #007bff;
+            color: white;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
@@ -101,6 +143,14 @@
 
     <div class="container">
         <h2 style="text-align: center;">📋 Quản lý Yêu cầu Mượn Sách</h2>
+        
+        <% if (successMessage != null) { %>
+            <div class="alert alert-success"><%= successMessage %></div>
+        <% } %>
+        <% if (errorMessage != null) { %>
+            <div class="alert alert-danger"><%= errorMessage %></div>
+        <% } %>
+        
         <% if (requests.isEmpty()) { %>
             <p style="text-align: center;">Không có yêu cầu nào đang chờ xử lý.</p>
         <% } else { %>
@@ -110,6 +160,7 @@
                         <th>Người mượn</th>
                         <th>Sách</th>
                         <th>Ngày yêu cầu</th>
+                        <th>Trạng thái</th>
                         <th>Hành động</th>
                     </tr>
                 </thead>
@@ -119,19 +170,38 @@
                             <td><%= r.getUserName() %></td>
                             <td><%= r.getBookTitle() %></td>
                             <td><%= r.getRequestDate() %></td>
-                            <td style="display: flex; gap: 8px;">
-                                <form action="<%= request.getContextPath() %>/MainController" method="post" style="margin: 0;">
-                                    <input type="hidden" name="requestId" value="<%= r.getRequestId() %>">
-                                    <input type="hidden" name="action" value="handle">
-                                    <input type="hidden" name="handleAction" value="approve">
-                                    <button type="submit" class="btn-action btn-approve">Chấp nhận</button>
-                                </form>
-                                <form action="<%= request.getContextPath() %>/MainController" method="post" style="margin: 0;">
-                                    <input type="hidden" name="requestId" value="<%= r.getRequestId() %>">
-                                    <input type="hidden" name="action" value="handle">
-                                    <input type="hidden" name="handleAction" value="reject">
-                                    <button type="submit" class="btn-action btn-reject">Từ chối</button>
-                                </form>
+                            <td>
+                                <% if ("pending".equals(r.getStatus())) { %>
+                                    <span class="status-tag status-pending">Chờ duyệt</span>
+                                <% } else if ("approved".equals(r.getStatus())) { %>
+                                    <span class="status-tag status-approved">Đã duyệt</span>
+                                <% } else if ("completed".equals(r.getStatus())) { %>
+                                    <span class="status-tag status-completed">Đã mượn</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if ("pending".equals(r.getStatus())) { %>
+                                    <form action="<%= request.getContextPath() %>/MainController" method="post" style="display: inline-block; margin: 0;">
+                                        <input type="hidden" name="requestId" value="<%= r.getRequestId() %>">
+                                        <input type="hidden" name="action" value="handle">
+                                        <input type="hidden" name="handleAction" value="approve">
+                                        <button type="submit" class="btn-action btn-approve">Chấp nhận</button>
+                                    </form>
+                                    <form action="<%= request.getContextPath() %>/MainController" method="post" style="display: inline-block; margin: 0;">
+                                        <input type="hidden" name="requestId" value="<%= r.getRequestId() %>">
+                                        <input type="hidden" name="action" value="handle">
+                                        <input type="hidden" name="handleAction" value="reject">
+                                        <button type="submit" class="btn-action btn-reject">Từ chối</button>
+                                    </form>
+                                <% } else if ("approved".equals(r.getStatus())) { %>
+                                    <form action="<%= request.getContextPath() %>/MainController" method="post" style="display: inline-block; margin: 0;">
+                                        <input type="hidden" name="requestId" value="<%= r.getRequestId() %>">
+                                        <input type="hidden" name="action" value="confirmBorrow">
+                                        <button type="submit" class="btn-action btn-confirm">Xác nhận mượn</button>
+                                    </form>
+                                <% } else if ("completed".equals(r.getStatus())) { %>
+                                    <!-- Không hiển thị nút hành động cho yêu cầu đã mượn -->
+                                <% } %>
                             </td>
                         </tr>
                     <% } %>

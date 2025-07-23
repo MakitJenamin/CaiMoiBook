@@ -256,7 +256,7 @@
                 
                 <div class="profile-section">
                     <h2>Cập nhật thông tin</h2>
-                    <form action="ProfileController" method="post">
+                    <form action="MainController" method="post">
                         <input type="hidden" name="action" value="updateProfile">
                         <div class="form-group">
                             <label for="name">Họ và tên:</label>
@@ -264,9 +264,9 @@
                         </div>
                         <div class="form-group">
                             <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" value="<%= user.getEmail() %>" required>
+                            <input type="email" id="email" name="email" value="<%= user.getEmail() %>" readonly>
                         </div>
-                        <button type="submit" class="btn">Cập nhật thông tin</button>
+                        <button type="submit" class="btn" name="action" value="profile">Cập nhật thông tin</button>
                     </form>
                 </div>
             </div>
@@ -275,7 +275,7 @@
             <div class="tab-content" id="password-tab">
                 <div class="profile-section">
                     <h2>Đổi mật khẩu</h2>
-                    <form action="ProfileController" method="post" id="passwordForm">
+                    <form action="MainController" method="post" id="passwordForm">
                         <input type="hidden" name="action" value="changePassword">
                         <div class="form-group">
                             <label for="currentPassword">Mật khẩu hiện tại:</label>
@@ -290,7 +290,7 @@
                             <input type="password" id="confirmPassword" name="confirmPassword" required>
                         </div>
                         <div id="passwordError" class="alert alert-danger" style="display: none;"></div>
-                        <button type="submit" class="btn">Đổi mật khẩu</button>
+                        <button type="submit" class="btn" name="action" value="changePassword">Đổi mật khẩu</button>
                     </form>
                 </div>
             </div>

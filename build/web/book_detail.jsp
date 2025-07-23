@@ -122,6 +122,8 @@
                         </form>
                 <%  } else if ("REQUESTED".equals(bookStatus)) { %>
                         <button disabled class="btn-requested" style="width: auto; padding: 12px 24px;">Đã yêu cầu</button>
+                <%  } else if ("APPROVED".equals(bookStatus)) { %>
+                        <button disabled class="btn-approved" style="width: auto; padding: 12px 24px;">Đã được duyệt</button>
                 <%  } else if ("BORROWED".equals(bookStatus)) { %>
                         <button disabled class="btn-borrowed" style="width: auto; padding: 12px 24px;">Đã mượn</button>
                 <%  } else { %>

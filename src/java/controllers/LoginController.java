@@ -28,16 +28,16 @@ public class LoginController extends HttpServlet {
         String email = request.getParameter("txtemail");
         String password = request.getParameter("txtpassword");
         PrintWriter out = response.getWriter();
-        if(email!= null && password != null){
+        if (email != null && password != null) {
             UserDAO d = new UserDAO();
             User user = d.getUser(email, password);
-            if(user !=null){
+            if (user != null) {
                 HttpSession session = request.getSession();
-                session.setAttribute("userId", user.getId());   
+                session.setAttribute("userId", user.getId());
                 session.setAttribute("userName", user.getName());
                 session.setAttribute("role", user.getRole());
                 session.setAttribute("status", user.getStatus());
-                
+
                 // Kiểm tra nếu có URL chuyển hướng được lưu trong session
                 String redirectURL = (String) session.getAttribute("redirectURL");
                 if (redirectURL != null) {
@@ -45,12 +45,7 @@ public class LoginController extends HttpServlet {
                     response.sendRedirect(redirectURL);
                 } else {
                     // Nếu không có URL chuyển hướng, chuyển hướng theo vai trò
-                    String role = user.getRole();
-                    if(role.equalsIgnoreCase("admin")){
-                        response.sendRedirect("index.jsp");
-                    } else {
-                        response.sendRedirect("index.jsp");
-                    }
+                    response.sendRedirect("index.jsp");
                 }
             } else {
                 request.setAttribute("errorMessage", "Email hoặc mật khẩu không chính xác.");

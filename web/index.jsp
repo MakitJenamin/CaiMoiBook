@@ -11,12 +11,6 @@
         return;
     }
 %>
-<%
-    if (request.getAttribute("bookList") == null) {
-        response.sendRedirect("MainController?action=search");
-        return;
-    }
-%>
 <% 
     String role = (String) session.getAttribute("role");
     Integer userId = (Integer) session.getAttribute("userId");
@@ -188,6 +182,8 @@
             </form>
             <% } else if ("REQUESTED".equals(bookStatus)) { %>
                 <button disabled class="btn-requested">Đã yêu cầu</button>
+            <% } else if ("APPROVED".equals(bookStatus)) { %>
+                <button disabled class="btn-approved">Đã được duyệt</button>
             <% } else if ("BORROWED".equals(bookStatus)) { %>
                 <button disabled class="btn-borrowed">Đã mượn</button>
             <% } else { %>

@@ -2,6 +2,9 @@
 <%@ page import="java.util.List" %>
 <%@ page import="dto.Record" %>
 <%@ page import="java.util.ArrayList" %>
+<%@ page import="dao.ConfigurationDAO" %>
+<%@ page import="java.util.Calendar" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%
     String userName = (String) session.getAttribute("userName");
     String role = (String) session.getAttribute("role");
@@ -9,6 +12,20 @@
     if (history == null) {
         history = new ArrayList<>();
     }
+    
+    // Lấy giá trị max_borrow_days từ bảng cấu hình
+    ConfigurationDAO configDAO = new ConfigurationDAO();
+    String maxBorrowDaysString = configDAO.getConfigurationValue("max_borrow_days");
+    int maxBorrowDays = 14; // Giá trị mặc định
+    try {
+        if (maxBorrowDaysString != null) {
+            maxBorrowDays = Integer.parseInt(maxBorrowDaysString);
+        }
+    } catch (NumberFormatException e) {
+        // Giữ giá trị mặc định nếu có lỗi parse
+    }
+    
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 %>
 <!DOCTYPE html>
 <html>
@@ -112,16 +129,24 @@
                         <th>Hạn trả</th>
                         <th>Ngày trả</th>
                         <th>Trạng thái</th>
-                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
                     <% for (Record r : history) { %>
                         <tr>
                             <td><%= r.getBookTitle() %></td>
-                            <td><%= r.getBorrowDate() %></td>
-                            <td><%= r.getDueDate() %></td>
-                            <td><%= r.getReturnDate() != null ? r.getReturnDate() : "Chưa trả" %></td>
+                            <td><%= sdf.format(r.getBorrowDate()) %></td>
+                            <td>
+                                <% 
+                                    // Tính ngày hẹn trả dựa trên thời gian mượn và max_borrow_days
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTime(r.getBorrowDate());
+                                    cal.add(Calendar.DAY_OF_MONTH, maxBorrowDays);
+                                    java.util.Date calculatedDueDate = cal.getTime();
+                                %>
+                                <%= sdf.format(calculatedDueDate) %>
+                            </td>
+                            <td><%= r.getReturnDate() != null ? sdf.format(r.getReturnDate()) : "Chưa trả" %></td>
                             <td>
                                 <%
                                     String statusText = "";
@@ -137,14 +162,6 @@
                                 <span class="status-<%= rawStatus.toLowerCase() %>">
                                     <%= statusText %>
                                 </span>
-                            </td>
-                            <td>
-                                <% if ("borrowed".equalsIgnoreCase(r.getStatus())) { %>
-                                    <form action="MainController" method="post" style="margin: 0;">
-                                        <input type="hidden" name="recordId" value="<%= r.getRecordId() %>"/>
-                                        <button type="submit" name="action" value="return" class="return-btn">Trả sách</button>
-                                    </form>
-                                <% } %>
                             </td>
                         </tr>
                     <% } %>

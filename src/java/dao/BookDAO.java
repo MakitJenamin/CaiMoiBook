@@ -118,7 +118,12 @@ public List<RequestDTO> getAllPendingRequests() {
     "FROM book_requests r " +
     "JOIN books b ON r.book_id = b.id " +
     "JOIN users u ON r.user_id = u.id " +
-    "WHERE r.status = 'pending'";
+    "WHERE r.status IN ('pending', 'approved', 'completed') " +
+    "ORDER BY CASE r.status " +
+    "   WHEN 'pending' THEN 1 " +
+    "   WHEN 'approved' THEN 2 " +
+    "   WHEN 'completed' THEN 3 " +
+    "   ELSE 4 END, r.request_date DESC";
     try (Connection conn = DBUtils.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql);
          ResultSet rs = ps.executeQuery()) {
@@ -180,7 +185,7 @@ public void rejectRequest(int requestId) {
 
 public List<Book> searchBooksAdvanced(String title, String author, String category) {
     List<Book> list = new ArrayList<>();
-    String sql = "SELECT * FROM books WHERE 1=1";
+    String sql = "SELECT * FROM books WHERE status = 'Available'";
 
     if (title != null && !title.trim().isEmpty()) {
         sql += " AND title LIKE ?";
@@ -318,7 +323,7 @@ public void insertBook(Book b) {
 }
 
 public void deleteBook(int id) {
-    String sql = "DELETE FROM books WHERE id = ?";
+    String sql = "UPDATE books SET status = 'Removed' WHERE id = ?";
     try (Connection conn = DBUtils.getConnection();
          PreparedStatement ps = conn.prepareStatement(sql)) {
         ps.setInt(1, id);
@@ -372,7 +377,7 @@ public String checkBookStatusForUser(int userId, int bookId) {
         cn = DBUtils.getConnection();
         if (cn != null) {
             // Check for a pending or approved request for this book by the user
-            String sqlCheckRequest = "SELECT status FROM book_requests WHERE user_id = ? AND book_id = ? AND status IN ('pending', 'approved')";
+            String sqlCheckRequest = "SELECT status FROM book_requests WHERE user_id = ? AND book_id = ? AND status IN ('pending', 'approved', 'completed')";
             pst = cn.prepareStatement(sqlCheckRequest);
             pst.setInt(1, userId);
             pst.setInt(2, bookId);
@@ -382,8 +387,23 @@ public String checkBookStatusForUser(int userId, int bookId) {
                 if ("pending".equals(requestStatus)) {
                     return "REQUESTED";
                 } else if ("approved".equals(requestStatus)) {
-                    return "BORROWED"; 
+                    return "APPROVED"; // Thay đổi từ BORROWED thành APPROVED
+                } else if ("completed".equals(requestStatus)) {
+                    return "BORROWED"; // Chỉ khi trạng thái là completed thì mới là BORROWED
                 }
+            }
+            
+            // Nếu không tìm thấy request hoặc request đã bị từ chối, kiểm tra xem người dùng có đang mượn sách này không
+            if (pst != null) pst.close();
+            if (rs != null) rs.close();
+            
+            String sqlCheckBorrow = "SELECT status FROM borrow_records WHERE user_id = ? AND book_id = ? AND status = 'borrowed'";
+            pst = cn.prepareStatement(sqlCheckBorrow);
+            pst.setInt(1, userId);
+            pst.setInt(2, bookId);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                return "BORROWED";
             }
         }
     } catch (Exception e) {

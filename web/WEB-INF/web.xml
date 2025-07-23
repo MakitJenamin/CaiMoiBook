@@ -115,6 +115,10 @@
         <servlet-name>ProfileController</servlet-name>
         <servlet-class>controllers.ProfileController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ConfirmBorrowController</servlet-name>
+        <servlet-class>controllers.ConfirmBorrowController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RegisterController</servlet-name>
         <url-pattern>/RegisterController</url-pattern>
@@ -214,6 +218,10 @@
     <servlet-mapping>
         <servlet-name>ProfileController</servlet-name>
         <url-pattern>/ProfileController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConfirmBorrowController</servlet-name>
+        <url-pattern>/ConfirmBorrowController</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

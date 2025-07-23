@@ -62,6 +62,9 @@ public class MainController extends HttpServlet {
                 case "handle":
                     url = "HandleRequestController";
                     break; 
+                case "confirmBorrow":
+                    url = "ConfirmBorrowController";
+                    break;
                 case "adminBorrow":
                     url = "AdminBorrowsController";
                     break;

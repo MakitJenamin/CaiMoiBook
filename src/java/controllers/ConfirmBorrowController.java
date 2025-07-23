@@ -4,16 +4,15 @@
  */
 package controllers;
 
-import dao.BookDAO;
 import dao.BorrowRecordDAO;
 import dao.RequestDAO;
 import dto.RequestDTO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
 import java.time.LocalDate;
 
@@ -21,7 +20,7 @@ import java.time.LocalDate;
  *
  * @author letpl
  */
-public class HandleRequestController extends HttpServlet {
+public class ConfirmBorrowController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,18 +34,44 @@ public class HandleRequestController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet HandleRequestController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet HandleRequestController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+        String url = "MainController?action=adminRequest";
+        
+        try {
+            int requestId = Integer.parseInt(request.getParameter("requestId"));
+            
+            // Lấy thông tin từ request
+            RequestDTO requestFound = RequestDAO.getRequestById(requestId);
+            
+            if (requestFound != null && "approved".equals(requestFound.getStatus())) {
+                int userId = requestFound.getUserId();
+                int bookId = requestFound.getBookId();
+
+                // Ngày mượn là hôm nay
+                LocalDate borrowDate = LocalDate.now();
+                // Hạn trả là 14 ngày sau (có thể chỉnh tùy chính sách)
+                LocalDate dueDate = borrowDate.plusDays(14);
+                
+                // Ghi vào bảng borrow_records
+                BorrowRecordDAO.insertBorrowRecord(userId, bookId, Date.valueOf(borrowDate), Date.valueOf(dueDate));
+                
+                // Cập nhật trạng thái yêu cầu thành "completed"
+                RequestDAO.updateRequestStatus(requestId, "completed");
+                
+                // Thêm thông báo vào session thay vì request để giữ thông báo sau khi chuyển hướng
+                HttpSession session = request.getSession();
+                session.setAttribute("successMessage", "Xác nhận mượn sách thành công!");
+            } else {
+                HttpSession session = request.getSession();
+                session.setAttribute("errorMessage", "Yêu cầu không hợp lệ hoặc không tồn tại!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            HttpSession session = request.getSession();
+            session.setAttribute("errorMessage", "Có lỗi xảy ra: " + e.getMessage());
         }
+        
+        // Sử dụng sendRedirect thay vì forward để tránh hiển thị trang trắng
+        response.sendRedirect(url);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -75,20 +100,7 @@ public class HandleRequestController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        int requestId = Integer.parseInt(request.getParameter("requestId"));
-        String action = request.getParameter("handleAction");
-
-        BookDAO dao = new BookDAO();
-        if ("approve".equals(action)) {
-            dao.approveRequest(requestId);
-            // Chỉ cập nhật trạng thái yêu cầu thành "approved"
-            // Không tạo bản ghi mượn sách ở đây nữa
-        } else if ("reject".equals(action)) {
-            dao.rejectRequest(requestId);
-        }
-
-        response.sendRedirect("MainController?action=adminRequest");
+        processRequest(request, response);
     }
 
     /**
@@ -100,5 +112,4 @@ public class HandleRequestController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-}
+} 

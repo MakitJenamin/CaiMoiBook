@@ -64,6 +64,20 @@ public class AdminRequestController extends HttpServlet {
         response.sendRedirect("index.jsp"); // Không phải admin → về trang chủ
         return;
     }
+        // Lấy thông báo từ session (nếu có) và chuyển sang request attribute
+        String successMessage = (String) session.getAttribute("successMessage");
+        String errorMessage = (String) session.getAttribute("errorMessage");
+        
+        if (successMessage != null) {
+            request.setAttribute("successMessage", successMessage);
+            session.removeAttribute("successMessage"); // Xóa thông báo sau khi sử dụng
+        }
+        
+        if (errorMessage != null) {
+            request.setAttribute("errorMessage", errorMessage);
+            session.removeAttribute("errorMessage"); // Xóa thông báo sau khi sử dụng
+        }
+        
         BookDAO dao = new BookDAO();
         List<RequestDTO> requests = dao.getAllPendingRequests();
         request.setAttribute("requests", requests);
