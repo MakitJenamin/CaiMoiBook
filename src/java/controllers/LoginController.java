@@ -45,7 +45,7 @@ public class LoginController extends HttpServlet {
                     response.sendRedirect(redirectURL);
                 } else {
                     // Nếu không có URL chuyển hướng, chuyển hướng theo vai trò
-                    response.sendRedirect("index.jsp");
+                    response.sendRedirect("MainController?action=home");
                 }
             } else {
                 request.setAttribute("errorMessage", "Email hoặc mật khẩu không chính xác.");

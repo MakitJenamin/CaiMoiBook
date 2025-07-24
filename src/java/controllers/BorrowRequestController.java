@@ -99,7 +99,7 @@ public class BorrowRequestController extends HttpServlet {
                                                category != null ? category : "");
             response.sendRedirect("MainController?action=search");
         } else {
-            response.sendRedirect("MainController?action=search");
+            response.sendRedirect("MainController?action=home");
         }
     }
 
